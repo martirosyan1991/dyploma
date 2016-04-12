@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">dyploma</string>
+
+    <!-- Запросы -->
+    <string name="load_query">http://193.233.66.2:8080/info/load.php</string>
+    <string name="number_query">http://193.233.66.2:8080/info/number.php</string>
 </resources>
