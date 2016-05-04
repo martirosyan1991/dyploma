@@ -1,4 +1,4 @@
-package com.dyploma.garik.dyploma;
+package info.androidhive.slidingmenu.Tasks;
 
 import android.os.AsyncTask;
 
