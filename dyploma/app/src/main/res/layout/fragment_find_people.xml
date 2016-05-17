@@ -3,20 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/txtLabel"
+
+
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textSize="16dp"
-        android:text="Find People View"/>
-
-    <ImageView android:layout_width="wrap_content"
+        android:id="@+id/loginEditText"
+        android:hint="Введите логин"
+        android:focusable="true"
+        android:textColorHighlight="#ff7eff15"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="100dp"
+        android:textColorHint="@color/colorAccent"
+        android:layout_marginTop="46dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+    <EditText
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtLabel"
-        android:src="@drawable/ic_oneman"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"/>
-
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="100dp"
+        android:id="@+id/editText"
+        android:hint="Пароль"
+        android:focusable="true"
+        android:textColorHighlight="#ff7eff15"
+        android:textColorHint="@color/colorAccent"
+        android:layout_marginTop="46dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:inputType="textPassword"
+        android:layout_below="@+id/loginEditText"/>
 
 </RelativeLayout>

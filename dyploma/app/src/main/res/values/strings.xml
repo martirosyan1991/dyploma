@@ -1,26 +1,21 @@
 <resources>
-    <string name="app_name">dyploma</string>
+    <string name="app_name">Поступи в МЭИ!</string>
 
     <!-- Запросы -->
     <string name="load_query">http://193.233.66.2:8080/info/load.php</string>
     <string name="number_query">http://193.233.66.2:8080/info/number.php</string>
     <string name="refresh">Обновить</string>
 
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="drawer_open">Slider Menu Opened</string>
-    <string name="drawer_close">Slider Menu Closed</string>
+    <string name="about">О приложении</string>
 
     <string-array name="nav_drawer_items">
-        <item>Page 1</item>
-        <item>Second page</item>
-        <item>3 Page</item>
-        <item>Fourth </item>
+        <item>Главная</item>
+        <item>Электронная очередь</item>
     </string-array>
 
     <array name="nav_drawer_icons">
-        <item>@drawable/ic_oneman</item>
-        <item>@drawable/ic_mood_bad</item>
+        <item>@drawable/ic_queue</item>
+        <item>@drawable/ic_profile</item>
     </array>
 
     <!-- Content Description -->
