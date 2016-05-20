@@ -1,13 +1,12 @@
 package info.androidhive.slidingmenu.Utils;
 
-import java.util.HashMap;
+import android.content.Context;
+
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by Harry on 14.04.2016.
- */
 public class FormatUtils {
 
     public static int getLoadFactor(String load) {
@@ -22,7 +21,7 @@ public class FormatUtils {
     }
 
     public static Map<String, Integer> getQueueNumbers(String input) {
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new TreeMap<>();
         Pattern p = Pattern.compile("STATUS: OK.*");
         Matcher matcher = p.matcher(input);
         if (matcher.matches()) {
@@ -32,11 +31,15 @@ public class FormatUtils {
             for (String s :some) {
                 matcher = p.matcher(s);
                 if (matcher.find()) {
-                    System.out.println("yyy group = " + matcher.group());
-
+                    map.put(matcher.group(1), Integer.parseInt(matcher.group(2)));
                 }
             }
         }
         return map;
+    }
+
+    public  static int convertDpToPixels(Context context, int dps) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dps * scale + 0.5f);
     }
 }

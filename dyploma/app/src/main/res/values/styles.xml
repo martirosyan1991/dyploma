@@ -14,4 +14,9 @@
         <item name="android:textSize">16dp</item>
     </style>
 
+    <style name="AppTheme.OneColoredMan">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">35dp</item>
+    </style>
+
 </resources>

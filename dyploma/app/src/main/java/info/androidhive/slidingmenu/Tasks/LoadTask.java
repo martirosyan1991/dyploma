@@ -7,9 +7,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by Harry on 12.04.2016.
- */
 public class LoadTask extends AsyncTask<String, Void, String> {
 
     protected String doInBackground(String... urls) {

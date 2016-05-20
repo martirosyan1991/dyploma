@@ -1,18 +1,16 @@
 package info.androidhive.slidingmenu;
 
-import info.androidhive.slidingmenu.Tasks.LoadTask;
-import info.androidhive.slidingmenu.Utils.FormatUtils;
 import info.androidhive.slidingmenu.adapter.NavDrawerListAdapter;
 import info.androidhive.slidingmenu.model.NavDrawerItem;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
 
+    private String android_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
 
-        navDrawerItems = new ArrayList<NavDrawerItem>();
+        navDrawerItems = new ArrayList<>();
 
         // adding nav drawer items to array
         // Home
@@ -114,6 +114,23 @@ public class MainActivity extends AppCompatActivity {
             // on first time display view for first nav item
             displayView(0);
         }
+
+        android_id = Settings.Secure.getString(this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        Toast.makeText(this, "Android deviceId = " + android_id + "\n hash = " + hashCode(android_id), Toast.LENGTH_LONG).show();
+    }
+
+    public static int hashCode(String value) {
+        int b     = 378551;
+        int a     = 63689;
+        int hash = 0;
+        for(int i = 0; i < value.length(); i++)
+        {
+            hash = hash * a + value.charAt(i);
+            System.out.println("yyy hash = " + hash);
+            a    = a * b;
+        }
+        return hash;
     }
 
     /**
@@ -231,24 +248,4 @@ public class MainActivity extends AppCompatActivity {
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
-
-    private  void parseQuery() {
-        try {
-            String load_query = new LoadTask().execute(getResources().getString(R.string.load_query)).get();
-            Toast.makeText(this,  "load_query = " + load_query,
-                    Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "load number equals " + FormatUtils.getLoadFactor(load_query+"231"), Toast.LENGTH_LONG).show();
-
-
-            String number_query = new LoadTask().execute(getResources().getString(R.string.number_query)).get();
-            Toast.makeText(this,  "number_query = " + number_query,
-                    Toast.LENGTH_LONG).show();
-            Toast.makeText(this, "number equals " + FormatUtils.getQueueNumbers(number_query), Toast.LENGTH_LONG).show();
-        } catch (InterruptedException | ExecutionException e) {
-
-            e.printStackTrace();
-        }
-    }
-
 }
