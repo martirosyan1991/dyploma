@@ -18,15 +18,15 @@ import java.util.concurrent.ExecutionException;
 import info.androidhive.slidingmenu.Tasks.LogonTask;
 import info.androidhive.slidingmenu.Tasks.RegMobileTask;
 
-public class FindPeopleFragment extends Fragment {
+public class AuthorizationFragment extends Fragment {
 
-    public FindPeopleFragment(){}
+    public AuthorizationFragment(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.fragment_find_people, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_authorization, container, false);
 
         Button loginButton = (Button) rootView.findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {

@@ -42,20 +42,21 @@ public class ServiceUtils {
         return  FormatUtils.getLoadFactor(load_query);
     }
 
-    public static int getLists(Context context) {
+    public static Map<String, String> getLists(Context context) {
 
+        Map<String, String> fullList = new HashMap<>();
         try {
             String baseUri = context.getResources().getString(R.string.list_base_uri);
             String load_query = new LoadTask().execute(context.getResources().getString(R.string.lists_and_orders)).get();
             Document doc  = Jsoup.parse(load_query);
             Elements links = doc.select("a[href~=list[a-z]?[0-9]*[a-z].html]");
 
-            Map<String, String> fullList = new HashMap<>();
+
             for (int i = 0; i < links.size(); i++) {
                 Document tempDoc = Jsoup.parse(new LoadTask().execute(baseUri + links.get(i).attr("href")).get());
                 Elements internalLinks = tempDoc.select("a[href~=list[a-z]?[0-9]*[a-z].html]");
                 for (int j = 0; j < internalLinks.size(); j++) {
-                    fullList.put(internalLinks.get(j).text(), internalLinks.get(j).attr("href"));
+                    fullList.put(baseUri + internalLinks.get(j).attr("href"), internalLinks.get(j).text());
                 }
             }
 
@@ -64,6 +65,6 @@ public class ServiceUtils {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        return  0;
+        return fullList;
     }
 }

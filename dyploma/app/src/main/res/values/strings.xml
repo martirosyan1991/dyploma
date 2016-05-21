@@ -18,11 +18,13 @@
     <string-array name="nav_drawer_items">
         <item>Главная</item>
         <item>Электронная очередь</item>
+        <item>Конкурсные группы</item>
     </string-array>
 
     <array name="nav_drawer_icons">
         <item>@drawable/ic_queue</item>
         <item>@drawable/ic_profile</item>
+        <item>@drawable/ic_mood_bad</item>
     </array>
 
     <string name="username">AmbartsumyanGG</string>

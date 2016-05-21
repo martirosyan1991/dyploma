@@ -24,18 +24,18 @@ import java.util.Map;
 import info.androidhive.slidingmenu.Utils.FormatUtils;
 import info.androidhive.slidingmenu.Utils.ServiceUtils;
 
-public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private LinearLayout queueLayout;
     private LinearLayout queueLoadLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    public HomeFragment(){}
+    public QueueFragment(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_queue, container, false);
 
         queueLayout = (LinearLayout) rootView.findViewById(R.id.queue_layout);
         queueLoadLayout = (LinearLayout) rootView.findViewById(R.id.queue_load_layout);
@@ -91,7 +91,5 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             System.out.println("yyy layoutParams = " + imageView.getLayoutParams());
             queueLoadList.addView(imageView);
         }
-
-        ServiceUtils.getLists(getActivity());
     }
 }

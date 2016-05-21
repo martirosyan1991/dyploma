@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         // Find People
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
 
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+
 
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -188,22 +190,22 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new HomeFragment();
+                fragment = new QueueFragment();
                 break;
             case 1:
-                fragment = new FindPeopleFragment();
+                fragment = new AuthorizationFragment();
                 break;
             case 2:
-                fragment = new HomeFragment();
+                fragment = new AllListsFragment();
                 break;
             case 3:
-                fragment = new FindPeopleFragment();
+                fragment = new AuthorizationFragment();
                 break;
             case 4:
-                fragment = new HomeFragment();
+                fragment = new QueueFragment();
                 break;
             case 5:
-                fragment = new FindPeopleFragment();
+                fragment = new AuthorizationFragment();
                 break;
 
             default:
