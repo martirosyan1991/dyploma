@@ -42,4 +42,8 @@ public class FormatUtils {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dps * scale + 0.5f);
     }
+
+    public static String addQueryParameter(String query, String parameterName, String parameterValue, boolean firstParameter) {
+        return query + (firstParameter ? "?" : "&") +  parameterName + "=" + parameterValue;
+    }
 }
