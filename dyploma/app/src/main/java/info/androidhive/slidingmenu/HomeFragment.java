@@ -58,7 +58,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }, 3000);
     }
 
+    /**
+     * Обновление состояния очередей
+     */
     private void refreshQueueStatus() {
+
+        // формируем список очередей по формату А - 10, Б - 15 и т.д.
         ListView queueList = (ListView) queueLayout.findViewById(R.id.queue_list);
         Map<String, Integer> queueNumbersMap = ServiceUtils.getQueueNumbers(getActivity());
         int mapSize = queueNumbersMap.values().size();
@@ -71,6 +76,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, queueTitles);
         queueList.setAdapter(adapter);
 
+
+        // выводим загруженность очереди в формате человечков
         LinearLayout queueLoadList = (LinearLayout) queueLoadLayout.findViewById(R.id.linear);
 
         for (int i = 0; i < 2; i++) {
@@ -84,5 +91,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             System.out.println("yyy layoutParams = " + imageView.getLayoutParams());
             queueLoadList.addView(imageView);
         }
+
+        ServiceUtils.getLists(getActivity());
     }
 }

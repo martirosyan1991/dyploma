@@ -4,6 +4,12 @@ import android.content.Context;
 
 import com.dyploma.garik.dyploma.R;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -14,10 +20,7 @@ import info.androidhive.slidingmenu.Tasks.LoadTask;
  */
 public class ServiceUtils {
 
-
-
-
-    public  static Map<String, Integer> getQueueNumbers(Context context) {
+    public static Map<String, Integer> getQueueNumbers(Context context) {
         String number_query = null;
         try {
             number_query = new LoadTask().execute(context.getResources().getString(R.string.number_query)).get();
@@ -27,7 +30,7 @@ public class ServiceUtils {
         return  FormatUtils.getQueueNumbers(number_query);
     }
 
-    public  static int getQueueLoad(Context context) {
+    public static int getQueueLoad(Context context) {
         String load_query = null;
         try {
             load_query = new LoadTask().execute(context.getResources().getString(R.string.load_query)).get();
@@ -37,5 +40,30 @@ public class ServiceUtils {
             e.printStackTrace();
         }
         return  FormatUtils.getLoadFactor(load_query);
+    }
+
+    public static int getLists(Context context) {
+
+        try {
+            String baseUri = context.getResources().getString(R.string.list_base_uri);
+            String load_query = new LoadTask().execute(context.getResources().getString(R.string.lists_and_orders)).get();
+            Document doc  = Jsoup.parse(load_query);
+            Elements links = doc.select("a[href~=list[a-z]?[0-9]*[a-z].html]");
+
+            Map<String, String> fullList = new HashMap<>();
+            for (int i = 0; i < links.size(); i++) {
+                Document tempDoc = Jsoup.parse(new LoadTask().execute(baseUri + links.get(i).attr("href")).get());
+                Elements internalLinks = tempDoc.select("a[href~=list[a-z]?[0-9]*[a-z].html]");
+                for (int j = 0; j < internalLinks.size(); j++) {
+                    fullList.put(internalLinks.get(j).text(), internalLinks.get(j).attr("href"));
+                }
+            }
+
+            System.out.println("yyy links = " + links);
+            System.out.println("yyy doc = " + doc);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return  0;
     }
 }

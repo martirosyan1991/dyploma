@@ -7,13 +7,14 @@ import java.util.ArrayList;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +22,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 ;import com.dyploma.garik.dyploma.R;
 
@@ -115,9 +115,11 @@ public class MainActivity extends AppCompatActivity {
             displayView(0);
         }
 
-        android_id = Settings.Secure.getString(this.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-        Toast.makeText(this, "Android deviceId = " + android_id + "\n hash = " + hashCode(android_id), Toast.LENGTH_LONG).show();
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        android_id = telephonyManager.getDeviceId();
+        //android_id = Settings.Secure.getString(this.getContentResolver(),
+          //      Settings.Secure.ANDROID_ID);
+        System.out.println("yyy Android deviceId = " + android_id + "\n hash = " + hashCode(android_id));
     }
 
     public static int hashCode(String value) {
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -182,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
      * Diplaying fragment view for selected nav drawer list item
      */
     private void displayView(int position) {
-        // update the main content by replacing fragments
+        // update the main_menu content by replacing fragments
         Fragment fragment = null;
         switch (position) {
             case 0:

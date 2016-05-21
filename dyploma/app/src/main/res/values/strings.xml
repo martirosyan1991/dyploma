@@ -4,6 +4,8 @@
     <!-- Запросы -->
     <string name="load_query">http://193.233.66.2:8080/info/load.php</string>
     <string name="number_query">http://193.233.66.2:8080/info/number.php</string>
+    <string name="lists_and_orders">http://www.pkmpei.ru/inform/lists_and_orders</string>
+    <string name="list_base_uri">http://www.pkmpei.ru</string>
     <string name="refresh">Обновить</string>
 
     <string name="about">О приложении</string>
@@ -18,6 +20,8 @@
         <item>@drawable/ic_profile</item>
     </array>
 
+    <string name="username">AmbartsumyanGG</string>
+        <string name="pwd">fRYgxO1v</string>
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
 </resources>
