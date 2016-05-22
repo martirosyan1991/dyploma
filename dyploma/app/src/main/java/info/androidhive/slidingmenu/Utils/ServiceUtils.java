@@ -1,6 +1,7 @@
 package info.androidhive.slidingmenu.Utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.dyploma.garik.dyploma.R;
 
@@ -8,18 +9,21 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import info.androidhive.slidingmenu.Tasks.LoadTask;
+import info.androidhive.slidingmenu.Tasks.LogonTask;
+import info.androidhive.slidingmenu.UserPreferences;
 
 /**
  * Created by Harry on 20.05.2016.
  */
 public class ServiceUtils {
 
+
+    private final static String TAG = "ServiceUtils";
     public static Map<String, Integer> getQueueNumbers(Context context) {
         String number_query = null;
         try {
@@ -66,5 +70,23 @@ public class ServiceUtils {
             e.printStackTrace();
         }
         return fullList;
+    }
+
+    public static void logon(String logon_query, String mobile_pwd) {
+        String FIOandBD = null;
+        try {
+            FIOandBD = new LogonTask(logon_query,
+                    UserPreferences.getInstance().getImei(),mobile_pwd).execute().get();
+
+            if (!FormatUtils.isEmpty(FIOandBD) && FIOandBD.startsWith("1")) {
+                UserPreferences.getInstance().setFIO(FIOandBD.split(" ")[1]);
+                UserPreferences.getInstance().setBirthDate(FIOandBD.split(" ")[2]);
+            } else {
+                throw  new ExecutionException(new Throwable());
+            }
+            System.out.println("yyy FIO and BD = " + FIOandBD);
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Ошибка при авторизации: " + FIOandBD);
+        }
     }
 }

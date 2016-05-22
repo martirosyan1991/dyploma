@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,8 @@ import com.dyploma.garik.dyploma.R;
 
 import java.util.concurrent.ExecutionException;
 
-import info.androidhive.slidingmenu.Tasks.LogonTask;
 import info.androidhive.slidingmenu.Tasks.RegMobileTask;
+import info.androidhive.slidingmenu.Utils.ServiceUtils;
 
 public class AuthorizationFragment extends Fragment {
 
@@ -34,8 +33,7 @@ public class AuthorizationFragment extends Fragment {
             public void onClick(View v) {
                 String username = ((TextView) rootView.findViewById(R.id.loginEditText)).getText().toString();
                 String password = ((TextView) rootView.findViewById(R.id.password_editText)).getText().toString();
-                TelephonyManager telephonyManager = (android.telephony.TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                String imei  = telephonyManager.getDeviceId();
+                String imei  = UserPreferences.getInstance().getImei();
                 try {
                     String regMobileResponse = new RegMobileTask(getActivity().getResources().getString(R.string.reg_mobile),
                             username, password, imei).execute().get();
@@ -46,8 +44,9 @@ public class AuthorizationFragment extends Fragment {
                         editor.putString(getString(R.string.supersaved_mobile_password), regMobileResponse.substring(2));
                         editor.commit();
                         System.out.println("yyy mobilePwd after = " + sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
-                        new LogonTask(getActivity().getResources().getString(R.string.logon),
-                                imei, regMobileResponse.substring(2)).execute().get();
+                        // если регистрация устройства прошла успешно, то проходим авторизацию
+                        ServiceUtils.logon(getActivity().getResources().getString(R.string.logon),
+                                sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
                     }
                     System.out.println("vvv loginResult = " + regMobileResponse);
                 } catch (InterruptedException e) {
@@ -64,8 +63,7 @@ public class AuthorizationFragment extends Fragment {
             public void onClick(View v) {
                 String username = ((TextView) rootView.findViewById(R.id.loginEditText)).getText().toString();
                 String password = ((TextView) rootView.findViewById(R.id.password_editText)).getText().toString();
-                TelephonyManager telephonyManager = (android.telephony.TelephonyManager)getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                String imei  = telephonyManager.getDeviceId();
+                String imei  = UserPreferences.getInstance().getImei();
                 try {
                     String regMobileResponse = new RegMobileTask(getActivity().getResources().getString(R.string.del_mobile),
                             username, password, imei).execute().get();

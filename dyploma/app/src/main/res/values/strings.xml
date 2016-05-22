@@ -16,8 +16,8 @@
     <string name="about">О приложении</string>
 
     <string-array name="nav_drawer_items">
-        <item>Главная</item>
         <item>Электронная очередь</item>
+        <item>Личный кабинет</item>
         <item>Конкурсные группы</item>
     </string-array>
 

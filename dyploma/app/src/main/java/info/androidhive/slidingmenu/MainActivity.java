@@ -1,5 +1,6 @@
 package info.androidhive.slidingmenu;
 
+import info.androidhive.slidingmenu.Utils.ServiceUtils;
 import info.androidhive.slidingmenu.adapter.NavDrawerListAdapter;
 import info.androidhive.slidingmenu.model.NavDrawerItem;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -43,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
 
-    private String android_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
         setContentView(R.layout.activity_main);
+
+        // сохраняем в настройки imei
+        TelephonyManager telephonyManager = (android.telephony.TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        UserPreferences.getInstance().setImei(telephonyManager.getDeviceId());
 
         mTitle = mDrawerTitle = getTitle();
 
@@ -112,16 +117,11 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+        logon();
         if (savedInstanceState == null) {
             // on first time display view for first nav item
             displayView(0);
         }
-
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        android_id = telephonyManager.getDeviceId();
-        //android_id = Settings.Secure.getString(this.getContentResolver(),
-          //      Settings.Secure.ANDROID_ID);
-        System.out.println("yyy Android deviceId = " + android_id + "\n hash = " + hashCode(android_id));
     }
 
     public static int hashCode(String value) {
@@ -251,5 +251,11 @@ public class MainActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    private void logon() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        ServiceUtils.logon(this.getResources().getString(R.string.logon),
+                sharedPref.getString(this.getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
     }
 }

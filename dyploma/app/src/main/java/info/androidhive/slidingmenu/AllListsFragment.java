@@ -22,6 +22,7 @@ import com.dyploma.garik.dyploma.R;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import info.androidhive.slidingmenu.Utils.FormatUtils;
 import info.androidhive.slidingmenu.Utils.ServiceUtils;
@@ -30,7 +31,7 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     ListView groupList;
     SwipeRefreshLayout mSwipeRefreshLayout;
-    Map<String, String> groupLinks = new HashMap<>();
+    Map<String, String> groupLinks = new TreeMap<>();
     public AllListsFragment(){}
 
     @Override

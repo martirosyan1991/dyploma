@@ -7,6 +7,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import info.androidhive.slidingmenu.UserPreferences;
+import info.androidhive.slidingmenu.Utils.FormatUtils;
+
 import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 
 public class LogonTask extends AsyncTask<String, Void, String> {
@@ -35,6 +38,11 @@ public class LogonTask extends AsyncTask<String, Void, String> {
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
                 response.append(inputLine);
+            }
+            String sessionId = connection.getHeaderField("Set-Cookie").split(";")[0];
+            if (!FormatUtils.isEmpty(sessionId)) {
+                UserPreferences.getInstance().setPhpSessId(sessionId.substring("PHPSESSID=".length(), sessionId.length()));
+                System.out.println("yyy sessId = " + sessionId + ", after substr = " + sessionId.substring("PHPSESSID:".length(), sessionId.length()));
             }
             System.out.println("yyy result = " + response);
             return response.toString();

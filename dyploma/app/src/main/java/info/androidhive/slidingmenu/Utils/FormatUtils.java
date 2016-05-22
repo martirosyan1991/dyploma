@@ -46,4 +46,8 @@ public class FormatUtils {
     public static String addQueryParameter(String query, String parameterName, String parameterValue, boolean firstParameter) {
         return query + (firstParameter ? "?" : "&") +  parameterName + "=" + parameterValue;
     }
+
+    public static boolean isEmpty(String value) {
+        return value == null || value.trim().length() <= 0;
+    }
 }
