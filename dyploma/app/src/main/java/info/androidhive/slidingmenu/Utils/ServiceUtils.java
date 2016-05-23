@@ -10,11 +10,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import info.androidhive.slidingmenu.PreStudent;
 import info.androidhive.slidingmenu.Tasks.LoadTask;
 import info.androidhive.slidingmenu.Tasks.LogonTask;
+import info.androidhive.slidingmenu.Tasks.OneListTask;
 import info.androidhive.slidingmenu.UserPreferences;
 
 /**
@@ -71,6 +75,42 @@ public class ServiceUtils {
         }
         return fullList;
     }
+
+    public static List<PreStudent> getOneList(String listUri) {
+
+        List<PreStudent> allPreStudents = new LinkedList<>();
+        try {
+            String load_query = new OneListTask().execute(listUri).get();
+            Document doc  = Jsoup.parse(load_query);
+            Elements links = doc.select("table[class=\"thin-grid competitive-group-table\"]");
+
+            if (links.size() == 1) {
+                Elements pepoleList = links.get(0).child(0).children();
+                for (int i = 2; i < pepoleList.size(); i++) {
+                    Elements fields = pepoleList.get(i).select("tr").select("td");
+                    PreStudent preStudent = new PreStudent();
+                    int ind = 0;
+                    preStudent.setSum(Integer.parseInt(fields.get(ind++).text()));
+                    preStudent.setMath(Integer.parseInt(fields.get(ind++).text()));
+                    preStudent.setPhysic(Integer.parseInt(fields.get(ind++).text()));
+                    preStudent.setRussian(Integer.parseInt(fields.get(ind++).text()));
+                    preStudent.setId(Integer.parseInt(fields.get(ind++).text()));
+                    preStudent.setFio(fields.get(ind++).text());
+                    preStudent.setBirthDate(fields.get(ind++).text());
+                    preStudent.setCommon(fields.get(ind++).text());
+                    preStudent.setDocumentStatus(fields.get(ind++).text());
+                    preStudent.setComments(fields.get(ind).text());
+                    allPreStudents.add(preStudent);
+                }
+            }
+            System.out.println("yyy links = " + links);
+            System.out.println("yyy doc = " + doc);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return allPreStudents;
+    }
+
 
     public static void logon(String logon_query, String mobile_pwd) {
         String FIOandBD = null;

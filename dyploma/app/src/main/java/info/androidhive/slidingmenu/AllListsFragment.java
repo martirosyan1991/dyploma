@@ -5,26 +5,21 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.dyploma.garik.dyploma.R;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import info.androidhive.slidingmenu.Utils.FormatUtils;
 import info.androidhive.slidingmenu.Utils.ServiceUtils;
 
 public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -44,7 +39,8 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
         groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                List<PreStudent> allPreStudents = ServiceUtils.getOneList(((TextView) view).getText().toString());
+                System.out.println("yyy allStudents = " + allPreStudents);
             }
         });
         refreshData();
@@ -75,7 +71,7 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
         String [] queueLines = listLinks.keySet().toArray(new String[mapSize]);
         String [] queueTitles = new String[mapSize];
         for (int i = 0; i < mapSize; i++) {
-            queueTitles[i] = queueLines[i] + " = " + numbers[i];
+            queueTitles[i] = queueLines[i];
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_link, queueTitles);
         groupList.setAdapter(adapter);

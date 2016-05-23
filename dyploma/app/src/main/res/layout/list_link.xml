@@ -3,6 +3,4 @@
     android:orientation="vertical"
     android:id="@+id/link_editText"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:autoLink="all"
-    android:linksClickable="true"/>
+    android:layout_height="wrap_content"/>
