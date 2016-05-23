@@ -10,6 +10,7 @@
     <string name="del_mobile">http://www.pkmpei.ru/mobile/del_mobile.php</string>
     <string name="logon">http://www.pkmpei.ru/mobile/logon.php</string>
     <string name="get_groups">http://www.pkmpei.ru/mobile/get_groups.php</string>
+    <string name="get_concurs">http://www.pkmpei.ru/mobile/get_concurs.php</string>
 
     <string name="refresh">Обновить</string>
     <string name="supersaved_mobile_password">supersaved_mobile_password</string>

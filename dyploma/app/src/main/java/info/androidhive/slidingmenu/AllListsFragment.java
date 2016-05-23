@@ -76,5 +76,7 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
         groupList.setAdapter(adapter);
         groupLinks.clear();
         groupLinks.putAll(listLinks);
+
+        ServiceUtils.getConcursGroup(getActivity());
     }
 }

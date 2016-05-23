@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import info.androidhive.slidingmenu.PreStudent;
+import info.androidhive.slidingmenu.Tasks.GetConcursTask;
 import info.androidhive.slidingmenu.Tasks.GetGroupsTask;
 import info.androidhive.slidingmenu.Tasks.LoadTask;
 import info.androidhive.slidingmenu.Tasks.LogonTask;
@@ -81,11 +82,19 @@ public class ServiceUtils {
         Map<String, String> fullList = new HashMap<>();
         try {
             String load_query = new GetGroupsTask().execute(context.getResources().getString(R.string.get_groups)).get();
-            System.out.println("yyy loadQuery for groups = " + load_query);
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении конкурсных списков: " + e.getLocalizedMessage());
         }
         return fullList;
+    }
+
+    public static String getConcursGroup(Context context) {
+        try {
+            return new GetConcursTask().execute(context.getResources().getString(R.string.get_concurs)).get();;
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Ошибка при получении позиции абитуриента в конкурсной группе: " + e.getLocalizedMessage());
+            return "";
+        }
     }
 
     public static List<PreStudent> getOneList(String listUri) {
