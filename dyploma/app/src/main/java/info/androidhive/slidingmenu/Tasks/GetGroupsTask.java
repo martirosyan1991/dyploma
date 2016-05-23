@@ -9,28 +9,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import info.androidhive.slidingmenu.UserPreferences;
-import info.androidhive.slidingmenu.Utils.FormatUtils;
 
 import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 
-public class LogonTask extends AsyncTask<String, Void, String> {
+public class GetGroupsTask extends AsyncTask<String, Void, String> {
 
-    private static final String TAG = "LogonTask";
-    private String logonUrl;
-    private String mobilePassword;
-    private String imei;
-    public LogonTask(String logonUrl, String imei, String mobilePassword) {
-        this.logonUrl = logonUrl;
-        this.imei = imei;
-        this.mobilePassword = mobilePassword;
-    }
+    private static final String TAG = "GetGroupTask";
 
     protected String doInBackground(String... urls) {
         try {
-            Log.d(TAG, "Начало выполнения запроса logon с imei = " + imei);
-            String uri  = addQueryParameter(logonUrl, "IMEI", imei, true);
-            uri = addQueryParameter(uri, "mobile_pwd", mobilePassword, false);
-
+            Log.d(TAG, "");
+            String uri  = addQueryParameter(urls[0], "PHPSESSID", UserPreferences.getInstance().getPhpSessId(), true);
             URL url = new URL(uri);
 
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -42,13 +31,8 @@ public class LogonTask extends AsyncTask<String, Void, String> {
             while ((inputLine = reader.readLine()) != null) {
                 response.append(inputLine);
             }
-            String sessionId = connection.getHeaderField("Set-Cookie").split(";")[0];
-            if (!FormatUtils.isEmpty(sessionId)) {
-                UserPreferences.getInstance().setPhpSessId(sessionId.substring("PHPSESSID=".length(), sessionId.length()));
-            }
             return response.toString();
         } catch (Exception e) {
-            Log.e(TAG, "Ошибка выполнения запроса: " + e.getLocalizedMessage());
             return null;
         }
     }

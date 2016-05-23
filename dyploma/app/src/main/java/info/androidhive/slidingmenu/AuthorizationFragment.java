@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import info.androidhive.slidingmenu.Tasks.RegMobileTask;
 import info.androidhive.slidingmenu.Utils.ServiceUtils;
 
 public class AuthorizationFragment extends Fragment {
+
+    private static final String TAG = "AuthorizationFragment";
 
     public AuthorizationFragment(){}
 
@@ -38,21 +41,19 @@ public class AuthorizationFragment extends Fragment {
                     String regMobileResponse = new RegMobileTask(getActivity().getResources().getString(R.string.reg_mobile),
                             username, password, imei).execute().get();
                     if (regMobileResponse.startsWith("1")) {
+                        Log.d(TAG, "Регистрация мобильного устройства прошла успешно");
                         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        System.out.println("yyy mobilePwd before = " + sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
                         editor.putString(getString(R.string.supersaved_mobile_password), regMobileResponse.substring(2));
                         editor.commit();
-                        System.out.println("yyy mobilePwd after = " + sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
                         // если регистрация устройства прошла успешно, то проходим авторизацию
                         ServiceUtils.logon(getActivity().getResources().getString(R.string.logon),
                                 sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
+                    } else {
+                        Log.e(TAG, "Регистрация мобильного устройства не завершена, код ошибки: " + regMobileResponse.substring(0,1));
                     }
-                    System.out.println("vvv loginResult = " + regMobileResponse);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException | ExecutionException e) {
+                    Log.e(TAG, "Регистрация мобильного устройства завершилась ошибкой: " + e.getLocalizedMessage());
                 }
             }
         });
@@ -65,13 +66,11 @@ public class AuthorizationFragment extends Fragment {
                 String password = ((TextView) rootView.findViewById(R.id.password_editText)).getText().toString();
                 String imei  = UserPreferences.getInstance().getImei();
                 try {
-                    String regMobileResponse = new RegMobileTask(getActivity().getResources().getString(R.string.del_mobile),
+                    new RegMobileTask(getActivity().getResources().getString(R.string.del_mobile),
                             username, password, imei).execute().get();
-                    System.out.println("vvv deleMobileResult = " + regMobileResponse);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                    Log.d(TAG, "Отвязка мобильного устройства прошла успешно");
+                } catch (InterruptedException | ExecutionException e) {
+                    Log.e(TAG, "Отвязка мобильного устройства завершилась ошибкой: " + e.getLocalizedMessage());
                 }
             }
         });

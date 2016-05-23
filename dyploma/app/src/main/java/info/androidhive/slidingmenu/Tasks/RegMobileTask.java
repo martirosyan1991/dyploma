@@ -2,6 +2,8 @@ package info.androidhive.slidingmenu.Tasks;
 
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.util.Log;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -11,6 +13,8 @@ import java.net.URL;
 import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 
 public class RegMobileTask extends AsyncTask<String, Void, String> {
+
+    private static final String TAG = "RegMobileTask";
 
     private String loginUrl;
     private String userName;
@@ -25,6 +29,7 @@ public class RegMobileTask extends AsyncTask<String, Void, String> {
 
     protected String doInBackground(String... urls) {
         try {
+            Log.d(TAG, "Регистрируем мобильное устройство с imei = " + imei + " для пользователя: " + userName);
             String uri  = addQueryParameter(loginUrl, "logon_name", userName, true);
             uri = addQueryParameter(uri, "logon_pwd", password, false);
             uri = addQueryParameter(uri, "IMEI", imei, false);
@@ -40,9 +45,9 @@ public class RegMobileTask extends AsyncTask<String, Void, String> {
             while ((inputLine = reader.readLine()) != null) {
                 response.append(inputLine);
             }
-            System.out.println("yyy result = " + response);
             return response.toString();
         } catch (Exception e) {
+            Log.e(TAG, "Ошибка при регистрации мобильного устройства: " + e.getLocalizedMessage());
             return null;
         }
     }

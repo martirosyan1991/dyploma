@@ -52,6 +52,7 @@ public class ServiceUtils {
 
     public static Map<String, String> getLists(Context context) {
 
+        Log.d(TAG, "Получение конкурсных списков");
         Map<String, String> fullList = new HashMap<>();
         try {
             String baseUri = context.getResources().getString(R.string.list_base_uri);
@@ -67,16 +68,14 @@ public class ServiceUtils {
                     fullList.put(baseUri + internalLinks.get(j).attr("href"), internalLinks.get(j).text());
                 }
             }
-
-            System.out.println("yyy links = " + links);
-            System.out.println("yyy doc = " + doc);
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Ошибка при получении конкурсных списков: " + e.getLocalizedMessage());
         }
         return fullList;
     }
 
     public static List<PreStudent> getOneList(String listUri) {
+        Log.d(TAG, "Получение содержимого списка: " + listUri);
 
         List<PreStudent> allPreStudents = new LinkedList<>();
         try {
@@ -85,9 +84,9 @@ public class ServiceUtils {
             Elements links = doc.select("table[class=\"thin-grid competitive-group-table\"]");
 
             if (links.size() == 1) {
-                Elements pepoleList = links.get(0).child(0).children();
-                for (int i = 2; i < pepoleList.size(); i++) {
-                    Elements fields = pepoleList.get(i).select("tr").select("td");
+                Elements peopleList = links.get(0).child(0).children();
+                for (int i = 2; i < peopleList.size(); i++) {
+                    Elements fields = peopleList.get(i).select("tr").select("td");
                     PreStudent preStudent = new PreStudent();
                     int ind = 0;
                     preStudent.setSum(Integer.parseInt(fields.get(ind++).text()));
@@ -103,10 +102,11 @@ public class ServiceUtils {
                     allPreStudents.add(preStudent);
                 }
             }
-            System.out.println("yyy links = " + links);
-            System.out.println("yyy doc = " + doc);
+            if (allPreStudents.size() == 0) {
+                Log.d(TAG, "Список студентов в конкурсной группе пустой");
+            }
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Ошибка при получении содержимого списка студентов: " + e.getLocalizedMessage());
         }
         return allPreStudents;
     }
@@ -124,7 +124,6 @@ public class ServiceUtils {
             } else {
                 throw  new ExecutionException(new Throwable());
             }
-            System.out.println("yyy FIO and BD = " + FIOandBD);
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при авторизации: " + FIOandBD);
         }

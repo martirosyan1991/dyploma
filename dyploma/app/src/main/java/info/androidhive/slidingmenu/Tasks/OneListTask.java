@@ -1,6 +1,8 @@
 package info.androidhive.slidingmenu.Tasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -14,9 +16,11 @@ import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 
 public class OneListTask extends AsyncTask<String, Void, String> {
 
-
+    private static final String TAG = "OneListTask"
+            ;
     protected String doInBackground(String... urls) {
         try {
+            Log.d(TAG, "Получения содержимого одного конкурсного списка.");
             URL url = new URL(urls[0]);
 
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -30,6 +34,7 @@ public class OneListTask extends AsyncTask<String, Void, String> {
             }
             return response.toString();
         } catch (Exception e) {
+            Log.e(TAG, "Ошибка при получении конкурсного списка: " + e.getLocalizedMessage());
             return null;
         }
     }

@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.view.ContextThemeWrapper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import info.androidhive.slidingmenu.Utils.ServiceUtils;
 
 public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
+    private static final String TAG = "QueueFragment";
     private LinearLayout queueLayout;
     private LinearLayout queueLoadLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -63,6 +65,7 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      */
     private void refreshQueueStatus() {
 
+        Log.d(TAG, "Обновление состояния очередей");
         // формируем список очередей по формату А - 10, Б - 15 и т.д.
         ListView queueList = (ListView) queueLayout.findViewById(R.id.queue_list);
         Map<String, Integer> queueNumbersMap = ServiceUtils.getQueueNumbers(getActivity());
@@ -80,6 +83,7 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         // выводим загруженность очереди в формате человечков
         LinearLayout queueLoadList = (LinearLayout) queueLoadLayout.findViewById(R.id.linear);
 
+        Log.d(TAG, "Выводим загруженность очереди в формате человечков");
         for (int i = 0; i < 2; i++) {
             ImageView imageView = new ImageView(new ContextThemeWrapper(getActivity(), R.style.AppTheme_OneColoredMan));
             int mycolor = getResources().getColor(R.color.colorPrimary);
@@ -88,7 +92,6 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             imageView.setImageDrawable(drawable);
             imageView.setImageDrawable(drawable);
             imageView.setLayoutParams(new DrawerLayout.LayoutParams(FormatUtils.convertDpToPixels(getActivity(), 20), FormatUtils.convertDpToPixels(getActivity(), 35)));
-            System.out.println("yyy layoutParams = " + imageView.getLayoutParams());
             queueLoadList.addView(imageView);
         }
     }

@@ -28,6 +28,8 @@ import android.widget.ListView;
 ;import com.dyploma.garik.dyploma.R;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -124,19 +126,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static int hashCode(String value) {
-        int b     = 378551;
-        int a     = 63689;
-        int hash = 0;
-        for(int i = 0; i < value.length(); i++)
-        {
-            hash = hash * a + value.charAt(i);
-            System.out.println("yyy hash = " + hash);
-            a    = a * b;
-        }
-        return hash;
-    }
-
     /**
      * Slide menu item click listener
      */
@@ -198,15 +187,6 @@ public class MainActivity extends AppCompatActivity {
             case 2:
                 fragment = new AllListsFragment();
                 break;
-            case 3:
-                fragment = new AuthorizationFragment();
-                break;
-            case 4:
-                fragment = new QueueFragment();
-                break;
-            case 5:
-                fragment = new AuthorizationFragment();
-                break;
 
             default:
                 break;
@@ -224,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
         } else {
             // error in creating fragment
-            Log.e("MainActivity", "Error in creating fragment");
+            Log.e(TAG, "Error in creating fragment");
         }
     }
 
@@ -254,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logon() {
+        Log.d(TAG, "Запрос на авторизацию пользователя");
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         ServiceUtils.logon(this.getResources().getString(R.string.logon),
                 sharedPref.getString(this.getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));

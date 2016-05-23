@@ -40,7 +40,6 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 List<PreStudent> allPreStudents = ServiceUtils.getOneList(((TextView) view).getText().toString());
-                System.out.println("yyy allStudents = " + allPreStudents);
             }
         });
         refreshData();

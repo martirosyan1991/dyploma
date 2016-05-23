@@ -1,6 +1,7 @@
 package info.androidhive.slidingmenu.Tasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -9,8 +10,11 @@ import java.net.URL;
 
 public class LoadTask extends AsyncTask<String, Void, String> {
 
+    private static final String TAG = "LoadTask";
+
     protected String doInBackground(String... urls) {
         try {
+            Log.d(TAG, "Начало выполнения запроса: " + urls[0]);
             URL url = new URL(urls[0]);
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("GET");
@@ -21,9 +25,9 @@ public class LoadTask extends AsyncTask<String, Void, String> {
             while ((inputLine = reader.readLine()) != null) {
                 response.append(inputLine);
             }
-            System.out.println("yyy result = " + response);
             return response.toString();
         } catch (Exception e) {
+            Log.e(TAG, "Ошибка выполнения запроса: " + e.getLocalizedMessage());
             return null;
         }
     }
