@@ -12,10 +12,10 @@ public class UserPreferences {
 
     private static UserPreferences instance;
     private UserPreferences() {
-        FIO = "defaultFIO";
-        birthDate = "01.01.1111";
-        imei = "000000000000000";
-        phpSessId = "defaultSessId";
+        FIO = "";
+        birthDate = "";
+        imei = "";
+        phpSessId = "";
     }
     public static UserPreferences getInstance() {
         if (instance == null) {

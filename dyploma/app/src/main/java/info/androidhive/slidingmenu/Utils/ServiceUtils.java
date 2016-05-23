@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import info.androidhive.slidingmenu.PreStudent;
+import info.androidhive.slidingmenu.Tasks.GetGroupsTask;
 import info.androidhive.slidingmenu.Tasks.LoadTask;
 import info.androidhive.slidingmenu.Tasks.LogonTask;
 import info.androidhive.slidingmenu.Tasks.OneListTask;
@@ -52,7 +53,7 @@ public class ServiceUtils {
 
     public static Map<String, String> getLists(Context context) {
 
-        Log.d(TAG, "Получение конкурсных списков");
+        Log.d(TAG, "Получение конкурсных списков для");
         Map<String, String> fullList = new HashMap<>();
         try {
             String baseUri = context.getResources().getString(R.string.list_base_uri);
@@ -68,6 +69,19 @@ public class ServiceUtils {
                     fullList.put(baseUri + internalLinks.get(j).attr("href"), internalLinks.get(j).text());
                 }
             }
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Ошибка при получении конкурсных списков: " + e.getLocalizedMessage());
+        }
+        return fullList;
+    }
+
+    public static Map<String, String> getListsForCurrentUser(Context context) {
+
+        Log.d(TAG, "Получение конкурсных списков для текущего пользователя");
+        Map<String, String> fullList = new HashMap<>();
+        try {
+            String load_query = new GetGroupsTask().execute(context.getResources().getString(R.string.get_groups)).get();
+            System.out.println("yyy loadQuery for groups = " + load_query);
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении конкурсных списков: " + e.getLocalizedMessage());
         }
@@ -119,6 +133,7 @@ public class ServiceUtils {
                     UserPreferences.getInstance().getImei(),mobile_pwd).execute().get();
 
             if (!FormatUtils.isEmpty(FIOandBD) && FIOandBD.startsWith("1")) {
+                Log.d(TAG, "Авторизация пользователя прошла успешно, ФИО и даты рождения: " + FIOandBD);
                 UserPreferences.getInstance().setFIO(FIOandBD.split(" ")[1]);
                 UserPreferences.getInstance().setBirthDate(FIOandBD.split(" ")[2]);
             } else {

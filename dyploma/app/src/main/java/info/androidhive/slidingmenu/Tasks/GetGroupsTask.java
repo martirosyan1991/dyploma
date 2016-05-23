@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import info.androidhive.slidingmenu.UserPreferences;
+import info.androidhive.slidingmenu.Utils.FormatUtils;
 
 import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 
@@ -18,8 +19,13 @@ public class GetGroupsTask extends AsyncTask<String, Void, String> {
 
     protected String doInBackground(String... urls) {
         try {
-            Log.d(TAG, "");
-            String uri  = addQueryParameter(urls[0], "PHPSESSID", UserPreferences.getInstance().getPhpSessId(), true);
+            Log.d(TAG, "Получение конкурсных групп для авторизованного пользователя");
+            String sessionId = UserPreferences.getInstance().getPhpSessId();
+            if (FormatUtils.isEmpty(sessionId)) {
+                Log.e(TAG, "Ошибка при получении списка конкурсных групп, пользователь не авторизован");
+                return "";
+            }
+            String uri  = addQueryParameter(urls[0], "PHPSESSID", sessionId, true);
             URL url = new URL(uri);
 
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
