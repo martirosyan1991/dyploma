@@ -13,19 +13,18 @@ import info.androidhive.slidingmenu.Utils.FormatUtils;
 
 import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 
-public class GetGroupsTask extends AsyncTask<String, Void, String> {
+public class GetNewsTask extends AsyncTask<String, Void, String> {
 
-    private static final String TAG = "GetGroupTask";
+    private static final String TAG = "GetNewsTask";
 
     protected String doInBackground(String... urls) {
         try {
-            Log.d(TAG, "Получение конкурсных групп для авторизованного пользователя");
+            Log.d(TAG, "Получение списка новостей");
             String sessionId = UserPreferences.getInstance().getPhpSessId();
-            if (FormatUtils.isEmpty(sessionId)) {
-                Log.e(TAG, "Ошибка при получении списка конкурсных групп, пользователь не авторизован");
-                return "";
+            String uri = urls[0];
+            if (!FormatUtils.isEmpty(sessionId)) {
+                uri  = addQueryParameter(urls[0], "PHPSESSID", sessionId, true);
             }
-            String uri  = addQueryParameter(urls[0], "PHPSESSID", sessionId, true);
             URL url = new URL(uri);
 
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -39,7 +38,7 @@ public class GetGroupsTask extends AsyncTask<String, Void, String> {
             }
             return response.toString();
         } catch (Exception e) {
-            Log.e(TAG, "Ошибка при получении списка конкурсных групп: " + e.getLocalizedMessage());
+            Log.e(TAG, "Ошибка при получении списка новостей: " + e.getLocalizedMessage());
             return "";
         }
     }

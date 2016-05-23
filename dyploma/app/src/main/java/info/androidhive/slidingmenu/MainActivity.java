@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
 
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+
 
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -179,12 +181,15 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new QueueFragment();
+                fragment = new NewsFragment();
                 break;
             case 1:
-                fragment = new AuthorizationFragment();
+                fragment = new QueueFragment();
                 break;
             case 2:
+                fragment = new AuthorizationFragment();
+                break;
+            case 3:
                 fragment = new AllListsFragment();
                 break;
 

@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import info.androidhive.slidingmenu.News;
 import info.androidhive.slidingmenu.PreStudent;
 import info.androidhive.slidingmenu.Tasks.GetConcursTask;
 import info.androidhive.slidingmenu.Tasks.GetGroupsTask;
+import info.androidhive.slidingmenu.Tasks.GetNewsTask;
 import info.androidhive.slidingmenu.Tasks.LoadTask;
 import info.androidhive.slidingmenu.Tasks.LogonTask;
 import info.androidhive.slidingmenu.Tasks.OneListTask;
@@ -54,7 +56,7 @@ public class ServiceUtils {
 
     public static Map<String, String> getLists(Context context) {
 
-        Log.d(TAG, "Получение конкурсных списков для");
+        Log.d(TAG, "Получение всех конкурсных списков");
         Map<String, String> fullList = new HashMap<>();
         try {
             String baseUri = context.getResources().getString(R.string.list_base_uri);
@@ -76,8 +78,23 @@ public class ServiceUtils {
         return fullList;
     }
 
+    public static List<News> getNews(Context context) {
+
+        Log.d(TAG, "Получение списка новостей");
+        List<News> fullList = new LinkedList<>();
+        try {
+            String load_query = new GetNewsTask().execute(context.getResources().getString(R.string.get_news)).get();
+            fullList = FormatUtils.getNews(load_query);
+            System.out.println("yyy список новостей = " + load_query);
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Ошибка при получении списка новостей: " + e.getLocalizedMessage());
+        }
+        return fullList;
+    }
+
     public static Map<String, String> getListsForCurrentUser(Context context) {
 
+        // TODO добавить обработку списка групп
         Log.d(TAG, "Получение конкурсных списков для текущего пользователя");
         Map<String, String> fullList = new HashMap<>();
         try {
@@ -90,7 +107,7 @@ public class ServiceUtils {
 
     public static String getConcursGroup(Context context) {
         try {
-            return new GetConcursTask().execute(context.getResources().getString(R.string.get_concurs)).get();;
+            return new GetConcursTask().execute(context.getResources().getString(R.string.get_concurs)).get();
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении позиции абитуриента в конкурсной группе: " + e.getLocalizedMessage());
             return "";

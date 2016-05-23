@@ -3,10 +3,14 @@ package info.androidhive.slidingmenu.Utils;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import info.androidhive.slidingmenu.News;
 
 public class FormatUtils {
 
@@ -44,6 +48,27 @@ public class FormatUtils {
             Log.e(TAG, "Электронная очередь пустая, возможна ошибка в запросе");
         }
         return map;
+    }
+
+    public static List<News> getNews(String input) {
+        Log.d(TAG, "Получаем список новостей");
+        List<News> result = new LinkedList<>();
+        String [] newsList = input.split("###");
+        for (String news: newsList) {
+            if (news.startsWith("Notice: ")) {
+                continue;
+            }
+            String [] details = news.split(";");
+            News n = new News();
+            int i = 0;
+            n.setId(Integer.parseInt(details[i++]));
+            n.setDate(details[i++]);
+            n.setTitle(details[i++]);
+            n.setText(details[i++]);
+            n.setExpandable("1".equals(details[i]));
+            result.add(n);
+        }
+        return result;
     }
 
     public  static int convertDpToPixels(Context context, int dps) {

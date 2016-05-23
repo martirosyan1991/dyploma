@@ -11,6 +11,7 @@
     <string name="logon">http://www.pkmpei.ru/mobile/logon.php</string>
     <string name="get_groups">http://www.pkmpei.ru/mobile/get_groups.php</string>
     <string name="get_concurs">http://www.pkmpei.ru/mobile/get_concurs.php</string>
+    <string name="get_news">http://www.pkmpei.ru/mobile/get_news.php</string>
 
     <string name="refresh">Обновить</string>
     <string name="supersaved_mobile_password">supersaved_mobile_password</string>
@@ -18,12 +19,14 @@
     <string name="about">О приложении</string>
 
     <string-array name="nav_drawer_items">
+        <item>Новости</item>
         <item>Электронная очередь</item>
         <item>Личный кабинет</item>
         <item>Конкурсные группы</item>
     </string-array>
 
     <array name="nav_drawer_icons">
+        <item>@drawable/ic_news</item>
         <item>@drawable/ic_queue</item>
         <item>@drawable/ic_profile</item>
         <item>@drawable/ic_mood_bad</item>
