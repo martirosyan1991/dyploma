@@ -54,18 +54,16 @@ public class FormatUtils {
         Log.d(TAG, "Получаем список новостей");
         List<News> result = new LinkedList<>();
         String [] newsList = input.split("###");
-        for (String news: newsList) {
-            if (news.startsWith("Notice: ")) {
-                continue;
-            }
-            String [] details = news.split(";");
+        for (int i = 1; i < newsList.length; i++) {
+            String news = newsList[i];
+            String [] details = news.split("##");
             News n = new News();
-            int i = 0;
-            n.setId(Integer.parseInt(details[i++]));
-            n.setDate(details[i++]);
-            n.setTitle(details[i++]);
-            n.setText(details[i++]);
-            n.setExpandable("1".equals(details[i]));
+            int j = 0;
+            n.setId(Integer.parseInt(details[j++]));
+            n.setDate(details[j++]);
+            n.setTitle(details[j++]);
+            n.setText(details[j++]);
+            n.setExpandable("1".equals(details[j]));
             result.add(n);
         }
         return result;
