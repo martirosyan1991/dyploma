@@ -3,10 +3,9 @@ package info.androidhive.slidingmenu.Tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import info.androidhive.slidingmenu.UserPreferences;
 import info.androidhive.slidingmenu.Utils.FormatUtils;
@@ -31,22 +30,20 @@ public class LogonTask extends AsyncTask<String, Void, String> {
             String uri  = addQueryParameter(logonUrl, "IMEI", imei, true);
             uri = addQueryParameter(uri, "mobile_pwd", mobilePassword, false);
 
-            URL url = new URL(uri);
+            Connection.Response connection = Jsoup.connect(uri).execute();
+            Document document = connection.parse();
 
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "windows-1251"));
-            StringBuilder response = new StringBuilder();
-            String inputLine;
-            while ((inputLine = reader.readLine()) != null) {
-                response.append(inputLine);
+            if (document.text().startsWith("1")) {
+                Log.d(TAG, "Авторизация мобильного устройства прошла успешно");
+                String sessionId = connection.cookie("PHPSESSID");
+                if (!FormatUtils.isEmpty(sessionId)) {
+                    Log.d(TAG, "Id сессии получен");
+                    UserPreferences.getInstance().setPhpSessId(connection.cookie("PHPSESSID"));
+                } else {
+                    Log.d(TAG, "Id сессии не был получен");
+                }
             }
-            String sessionId = connection.getHeaderField("Set-Cookie").split(";")[0];
-            if (!FormatUtils.isEmpty(sessionId)) {
-                UserPreferences.getInstance().setPhpSessId(sessionId.substring("PHPSESSID=".length(), sessionId.length()));
-            }
-            return response.toString();
+            return document.text();
         } catch (Exception e) {
             Log.e(TAG, "Ошибка выполнения запроса: " + e.getLocalizedMessage());
             return null;

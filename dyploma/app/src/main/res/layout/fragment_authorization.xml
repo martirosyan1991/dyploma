@@ -43,19 +43,34 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="login"
+        android:text="Register and login"
         android:layout_marginLeft="16dp"
-        android:id="@+id/login_button"
+        android:id="@+id/register_and_login_button"
         android:layout_below="@+id/password_editText"/>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Login"
+        android:layout_marginLeft="16dp"
+        android:id="@+id/login_button"
+        android:layout_toRightOf="@+id/register_and_login_button"
+        android:layout_toEndOf="@+id/register_and_login_button"
+        android:layout_below="@+id/password_editText"/>
+
+    <Button
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="48dp"
-        android:text="Cancel"
+        android:text="Delete"
         android:id="@+id/cancel_button"
         android:layout_toRightOf="@+id/login_button"
         android:layout_toEndOf="@+id/login_button"
         android:layout_below="@+id/password_editText"/>
+
+    <Button
+        android:id="@+id/check_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check Auth"/>
 
 </RelativeLayout>

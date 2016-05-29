@@ -30,8 +30,8 @@ public class AuthorizationFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_authorization, container, false);
 
-        Button loginButton = (Button) rootView.findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        Button registerAndLoginButton = (Button) rootView.findViewById(R.id.register_and_login_button);
+        registerAndLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String username = ((TextView) rootView.findViewById(R.id.loginEditText)).getText().toString();
@@ -55,6 +55,28 @@ public class AuthorizationFragment extends Fragment {
                 } catch (InterruptedException | ExecutionException e) {
                     Log.e(TAG, "Регистрация мобильного устройства завершилась ошибкой: " + e.getLocalizedMessage());
                 }
+            }
+        });
+
+        Button loginButton = (Button) rootView.findViewById(R.id.login_button);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        // если регистрация устройства прошла успешно, то проходим авторизацию
+                        ServiceUtils.logon(getActivity().getResources().getString(R.string.logon),
+                                sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
+
+            }
+        });
+
+        Button checkButton = (Button) rootView.findViewById(R.id.check_button);
+        checkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // проверяем авторизацию
+                ServiceUtils.checkAuth(getActivity().getString(R.string.check_auth));
             }
         });
 

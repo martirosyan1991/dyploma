@@ -7,19 +7,26 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import info.androidhive.slidingmenu.UserPreferences;
 import info.androidhive.slidingmenu.Utils.FormatUtils;
 
-public class GetNewsTask extends AsyncTask<String, Void, String> {
+import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 
-    private static final String TAG = "GetNewsTask";
+public class CheckAuthTask extends AsyncTask<String, Void, String> {
+
+    private static final String TAG = "LogonTask";
 
     protected String doInBackground(String... urls) {
         try {
-            Log.d(TAG, "Получение списка новостей");
             String sessionId = UserPreferences.getInstance().getPhpSessId();
+            Log.d(TAG, "Начало выполнения запроса checkAuth с phpsessid = " + sessionId);
             if (FormatUtils.isEmpty(sessionId)) {
-                Log.e(TAG, "Ошибка при получении позиции абитуриента в конкурсных группах, пользователь не авторизован");
+                Log.e(TAG, "Ошибка при проверке прав пользователя, пользователь не авторизован");
                 return "";
             }
             Connection.Response connection = Jsoup.connect(urls[0]).cookie("PHPSESSID", sessionId).execute();
@@ -27,8 +34,8 @@ public class GetNewsTask extends AsyncTask<String, Void, String> {
             Log.d(TAG, "Запрос прошел успешно, результат: " + document.text());
             return document.text();
         } catch (Exception e) {
-            Log.e(TAG, "Ошибка при получении списка новостей: " + e.getLocalizedMessage());
-            return "";
+            Log.e(TAG, "Ошибка выполнения запроса: " + e.getLocalizedMessage());
+            return null;
         }
     }
 

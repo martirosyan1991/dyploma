@@ -12,6 +12,7 @@
     <string name="get_groups">http://www.pkmpei.ru/mobile/get_groups.php</string>
     <string name="get_concurs">http://www.pkmpei.ru/mobile/get_concurs.php</string>
     <string name="get_news">http://www.pkmpei.ru/mobile/get_news.php</string>
+    <string name="check_auth">http://www.pkmpei.ru/mobile/check_auth.php</string>
 
     <string name="refresh">Обновить</string>
     <string name="supersaved_mobile_password">supersaved_mobile_password</string>
