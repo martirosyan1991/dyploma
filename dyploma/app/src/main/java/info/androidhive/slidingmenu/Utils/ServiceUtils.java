@@ -128,24 +128,36 @@ public class ServiceUtils {
             if (links.size() == 1) {
                 Elements peopleList = links.get(0).child(0).children();
                 for (int i = 2; i < peopleList.size(); i++) {
-                    Elements fields = peopleList.get(i).select("tr").select("td");
-                    PreStudent preStudent = new PreStudent();
-                    int ind = 0;
-                    preStudent.setSum(Integer.parseInt(fields.get(ind++).text()));
-                    preStudent.setMath(Integer.parseInt(fields.get(ind++).text()));
-                    preStudent.setPhysic(Integer.parseInt(fields.get(ind++).text()));
-                    preStudent.setRussian(Integer.parseInt(fields.get(ind++).text()));
-                    preStudent.setId(Integer.parseInt(fields.get(ind++).text()));
-                    preStudent.setFio(fields.get(ind++).text());
-                    preStudent.setBirthDate(fields.get(ind++).text());
-                    preStudent.setCommon(fields.get(ind++).text());
-                    preStudent.setDocumentStatus(fields.get(ind++).text());
-                    preStudent.setComments(fields.get(ind).text());
-                    allPreStudents.add(preStudent);
+                    try {
+                        Elements fields = peopleList.get(i).select("tr").select("td");
+                        PreStudent preStudent = new PreStudent();
+                        int ind = 0;
+                        preStudent.setSum(Integer.parseInt(fields.get(ind++).text().replace("\u00A0","").trim()));
+                        preStudent.setMath(Integer.parseInt(fields.get(ind++).text().replace("\u00A0","").trim()));
+                        // Хак, есть таблицы, где не указаны баллы за физику
+                        if (fields.size() == 10) {
+                            preStudent.setPhysic(Integer.parseInt(fields.get(ind++).text().replace("\u00A0", "").trim()));
+                        }
+                        preStudent.setRussian(Integer.parseInt(fields.get(ind++).text().replace("\u00A0","").trim()));
+                        preStudent.setId(fields.get(ind++).text().replace("\u00A0","").trim());
+                        preStudent.setFio(fields.get(ind++).text());
+                        preStudent.setBirthDate(fields.get(ind++).text());
+                        preStudent.setCommon(fields.get(ind++).text());
+                        preStudent.setDocumentStatus(fields.get(ind++).text());
+                        preStudent.setComments(fields.get(ind).text());
+                        allPreStudents.add(preStudent);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Ошибка при парсинге данных абитуриента из списка: " + peopleList.get(i) +
+                        "\nСообщение об ошибке: "+ e.getLocalizedMessage());
+                    }
                 }
+            } else {
+                Log.e(TAG, "Что-то не так со списком, количество подходящих таблиц : " + links.size());
             }
             if (allPreStudents.size() == 0) {
                 Log.d(TAG, "Список студентов в конкурсной группе пустой");
+            } else {
+                Log.d(TAG, "Список студентов успешно загужен, количество элементов списка: " + allPreStudents.size());
             }
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении содержимого списка студентов: " + e.getLocalizedMessage());

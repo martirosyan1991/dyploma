@@ -17,7 +17,7 @@ public class LoadTask extends AsyncTask<String, Void, String> {
             Connection.Response connection = Jsoup.connect(urls[0]).execute();
             Document document = connection.parse();
             Log.d(TAG, "Запрос прошел успешно, результат: " + document.text());
-            return document.text();
+            return document.toString();
         } catch (Exception e) {
             Log.e(TAG, "Ошибка выполнения запроса: " + e.getLocalizedMessage());
             return null;

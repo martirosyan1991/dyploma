@@ -9,7 +9,7 @@ public class PreStudent {
     private int math;
     private int physic;
     private int russian;
-    private int id;
+    private String id;
     private String fio;
     private String birthDate;
     private String common;
@@ -48,11 +48,11 @@ public class PreStudent {
         this.russian = russian;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
