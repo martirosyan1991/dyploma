@@ -16,6 +16,7 @@ import com.dyploma.garik.dyploma.R;
 import java.util.concurrent.ExecutionException;
 
 import info.androidhive.slidingmenu.Tasks.RegOrDelMobileTask;
+import info.androidhive.slidingmenu.Utils.FormatUtils;
 import info.androidhive.slidingmenu.Utils.ServiceUtils;
 
 public class AuthorizationFragment extends Fragment {
@@ -57,7 +58,11 @@ public class AuthorizationFragment extends Fragment {
                                 new Callback<String>() {
                                     @Override
                                     public void call(String input) {
-
+                                        if (!FormatUtils.isEmpty(input)) {
+                                            android.app.FragmentManager fragmentManager = getFragmentManager();
+                                            fragmentManager.beginTransaction()
+                                                    .replace(R.id.frame_container, new SignedInFragment()).commit();
+                                        }
                                     }
                                 });
                     } else {
@@ -81,6 +86,9 @@ public class AuthorizationFragment extends Fragment {
                                 new Callback<String>() {
                                     @Override
                                     public void call(String input) {
+                                            android.app.FragmentManager fragmentManager = getFragmentManager();
+                                            fragmentManager.beginTransaction()
+                                                    .replace(R.id.frame_container, new SignedInFragment()).commit();
 
                                     }
                                 });
@@ -93,7 +101,12 @@ public class AuthorizationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // проверяем авторизацию
-                ServiceUtils.checkAuth(getActivity().getString(R.string.check_auth));
+                ServiceUtils.checkAuth(getActivity().getString(R.string.check_auth), new Callback<Boolean>() {
+                    @Override
+                    public void call(Boolean input) {
+
+                    }
+                });
             }
         });
 

@@ -57,10 +57,10 @@ public class MainActivity extends AppCompatActivity {
         TelephonyManager telephonyManager = (android.telephony.TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         UserPreferences.getInstance().setImei(telephonyManager.getDeviceId());
 
-        // пытаемся залогиниться
-        logon();
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
+        // пытаемся залогиниться
+        logon();
         setContentView(R.layout.activity_main);
 
         mTitle = mDrawerTitle = getTitle();

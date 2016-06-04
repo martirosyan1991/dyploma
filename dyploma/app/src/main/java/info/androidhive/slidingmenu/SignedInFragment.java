@@ -1,7 +1,11 @@
 package info.androidhive.slidingmenu;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +17,14 @@ import com.dyploma.garik.dyploma.R;
 
 import java.util.concurrent.ExecutionException;
 
+import info.androidhive.slidingmenu.Tasks.LogoutTask;
 import info.androidhive.slidingmenu.Tasks.RegOrDelMobileTask;
+import info.androidhive.slidingmenu.Utils.ServiceUtils;
 
 public class SignedInFragment extends Fragment {
 
     private static final String TAG = "AuthorizationFragment";
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public SignedInFragment(){}
 
@@ -27,25 +34,26 @@ public class SignedInFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_signed_in, container, false);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refreshSignedInFragment);
         Button cancelButton = (Button) rootView.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = ((TextView) rootView.findViewById(R.id.loginEditText)).getText().toString();
-                String password = ((TextView) rootView.findViewById(R.id.password_editText)).getText().toString();
-                String imei  = UserPreferences.getInstance().getImei();
-                try {
-                    new RegOrDelMobileTask(getActivity().getResources().getString(R.string.del_mobile),
-                            username, password, imei, new Callback<String>() {
-                        @Override
-                        public void call(String input) {
-
-                        }
-                    }).execute().get();
-                    Log.d(TAG, "Отвязка мобильного устройства прошла успешно");
-                } catch (InterruptedException | ExecutionException e) {
-                    Log.e(TAG, "Отвязка мобильного устройства завершилась ошибкой: " + e.getLocalizedMessage());
-                }
+                swipeRefreshLayout.setRefreshing(true);
+                ServiceUtils.logout(getResources().getString(R.string.logout),
+                        new Callback<String>() {
+                            @Override
+                            public void call(String input) {
+                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.remove("PHPSESSID");
+                                editor.commit();
+                                swipeRefreshLayout.setRefreshing(false);
+                                android.app.FragmentManager fragmentManager = getFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.frame_container, new AuthorizationFragment()).commit();
+                            }
+                        });
             }
         });
 

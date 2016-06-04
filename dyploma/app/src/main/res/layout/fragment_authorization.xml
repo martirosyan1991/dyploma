@@ -41,7 +41,7 @@
         android:text="@string/pwd"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="Register and login"
         android:layout_marginLeft="16dp"
@@ -58,9 +58,9 @@
         android:layout_below="@+id/password_editText"/>
 
     <Button
-        android:layout_width="48dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="48dp"
+        android:layout_marginLeft="16dp"
         android:text="Delete"
         android:id="@+id/cancel_button"
         android:layout_toRightOf="@+id/login_button"
@@ -71,6 +71,9 @@
         android:id="@+id/check_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/login_button"
+        android:layout_toStartOf="@id/cancel_button"
+        android:layout_toLeftOf="@id/cancel_button"
         android:text="Check Auth"/>
 
 </RelativeLayout>

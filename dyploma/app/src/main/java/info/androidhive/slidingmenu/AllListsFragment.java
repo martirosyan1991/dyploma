@@ -48,10 +48,10 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
                         });
             }
         });
-        refreshData();
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refreshGroupList);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
+        refreshData();
 
 
         return rootView;
@@ -59,21 +59,20 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        mSwipeRefreshLayout.setRefreshing(true);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 refreshData();
-                mSwipeRefreshLayout.setRefreshing(false);
             }
-        }, 3000);
+        }, 1000);
     }
 
     private void refreshData() {
+        mSwipeRefreshLayout.setRefreshing(true);
         Map<String, String> listLinks = ServiceUtils.getListsForCurrentUser(getActivity(), new Callback<String>() {
             @Override
             public void call(String input) {
-
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
         int mapSize = listLinks.values().size();

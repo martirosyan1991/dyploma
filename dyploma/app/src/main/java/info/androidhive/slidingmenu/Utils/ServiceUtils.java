@@ -24,6 +24,7 @@ import info.androidhive.slidingmenu.Tasks.GetGroupsTask;
 import info.androidhive.slidingmenu.Tasks.GetNewsTask;
 import info.androidhive.slidingmenu.Tasks.LoadTask;
 import info.androidhive.slidingmenu.Tasks.LogonTask;
+import info.androidhive.slidingmenu.Tasks.LogoutTask;
 import info.androidhive.slidingmenu.Tasks.OneListTask;
 import info.androidhive.slidingmenu.UserPreferences;
 
@@ -187,19 +188,20 @@ public class ServiceUtils {
         }
     }
 
-    public static void checkAuth(String checkQuery) {
+    public static void checkAuth(String checkQuery, Callback<Boolean> callback) {
         String result = null;
         try {
-            result = new CheckAuthTask(new Callback<String>() {
-                @Override
-                public void call(String input) {
-                    if (!FormatUtils.isEmpty(input)) {
-                        Log.d(TAG, "Проверка авторизации прошла успешно: " + input);
-                    } else {
-                        Log.e(TAG, "Проверка авторизации закончилась неудачно: " + input);
-                    }
-                }
-            }).execute(checkQuery).get();
+            result = new CheckAuthTask(callback).execute(checkQuery).get();
+            Log.d(TAG, "Запрос проверки авторизации прошел успешно: " + result);
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Ошибка при проверке авторизации: " + result + "{" + e.getLocalizedMessage() + "}");
+        }
+    }
+
+    public static void logout(String checkQuery, Callback<String> callback) {
+        String result = null;
+        try {
+            result = new LogoutTask(callback).execute(checkQuery).get();
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при проверке авторизации: " + result + "{" + e.getLocalizedMessage() + "}");
         }
