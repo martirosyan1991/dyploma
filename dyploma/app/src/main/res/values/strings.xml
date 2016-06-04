@@ -24,6 +24,7 @@
         <item>Электронная очередь</item>
         <item>Личный кабинет</item>
         <item>Конкурсные группы</item>
+        <item>Тестовая одна группа</item>
     </string-array>
 
     <array name="nav_drawer_icons">
@@ -31,6 +32,7 @@
         <item>@drawable/ic_queue</item>
         <item>@drawable/ic_profile</item>
         <item>@drawable/ic_mood_bad</item>
+        <item>@drawable/ic_black_heart</item>
     </array>
 
     <string name="username">AmbartsumyanGG</string>

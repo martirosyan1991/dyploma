@@ -1,5 +1,6 @@
 package info.androidhive.slidingmenu;
 
+import info.androidhive.slidingmenu.Utils.FormatUtils;
 import info.androidhive.slidingmenu.Utils.ServiceUtils;
 import info.androidhive.slidingmenu.adapter.NavDrawerListAdapter;
 import info.androidhive.slidingmenu.model.NavDrawerItem;
@@ -51,13 +52,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-
-        setContentView(R.layout.activity_main);
 
         // сохраняем в настройки imei
         TelephonyManager telephonyManager = (android.telephony.TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         UserPreferences.getInstance().setImei(telephonyManager.getDeviceId());
+
+        // пытаемся залогиниться
+        logon();
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+
+        setContentView(R.layout.activity_main);
 
         mTitle = mDrawerTitle = getTitle();
 
@@ -73,16 +77,22 @@ public class MainActivity extends AppCompatActivity {
 
         navDrawerItems = new ArrayList<>();
 
-        // adding nav drawer items to array
-        // Home
+        // Добавляем пункты меню в боковое меню
+        // Новости
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        // Find People
+        // Электронная очередь
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-
+        // Личный кабинет
+        String FIO = UserPreferences.getInstance().getFIO();
+        if (!FormatUtils.isEmpty(FIO)) {
+            navDrawerItems.add(new NavDrawerItem(FIO, navMenuIcons.getResourceId(2, -1)));
+        } else {
+            navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+        }
+        // Конкурсные группы
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
-
+        // Тестовая группа
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
 
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -121,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        logon();
         if (savedInstanceState == null) {
             // on first time display view for first nav item
             displayView(0);
@@ -187,10 +196,17 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new QueueFragment();
                 break;
             case 2:
-                fragment = new AuthorizationFragment();
+                if (UserPreferences.getInstance().getFIO().isEmpty()) {
+                    fragment = new AuthorizationFragment();
+                } else {
+                    fragment = new SignedInFragment();
+                }
                 break;
             case 3:
                 fragment = new AllListsFragment();
+                break;
+            case 4:
+                fragment = new ConcursGroupFragment();
                 break;
 
             default:

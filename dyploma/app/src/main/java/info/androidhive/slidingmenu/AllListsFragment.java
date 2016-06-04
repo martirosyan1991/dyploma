@@ -40,7 +40,6 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 List<PreStudent> allPreStudents = ServiceUtils.getOneList(((TextView) view).getText().toString());
-                System.out.println("yyy sllPreStud = " + allPreStudents);
             }
         });
         refreshData();
@@ -65,9 +64,8 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void refreshData() {
-        Map<String, String> listLinks = ServiceUtils.getLists(getActivity());
+        Map<String, String> listLinks = ServiceUtils.getListsForCurrentUser(getActivity());
         int mapSize = listLinks.values().size();
-        String [] numbers = listLinks.values().toArray(new String[mapSize]);
         String [] queueLines = listLinks.keySet().toArray(new String[mapSize]);
         String [] queueTitles = new String[mapSize];
         for (int i = 0; i < mapSize; i++) {

@@ -9,15 +9,15 @@ import org.jsoup.nodes.Document;
 
 import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 
-public class RegMobileTask extends AsyncTask<String, Void, String> {
+public class RegOrDelMobileTask extends AsyncTask<String, Void, String> {
 
-    private static final String TAG = "RegMobileTask";
+    private static final String TAG = "RegOrDelMobileTask";
 
     private String loginUrl;
     private String userName;
     private String password;
     private String imei;
-    public RegMobileTask(String loginUrl, String userName, String password, String imei) {
+    public RegOrDelMobileTask(String loginUrl, String userName, String password, String imei) {
         this.loginUrl = loginUrl;
         this.userName = userName;
         this.password = password;
@@ -26,7 +26,7 @@ public class RegMobileTask extends AsyncTask<String, Void, String> {
 
     protected String doInBackground(String... urls) {
         try {
-            Log.d(TAG, "Регистрируем мобильное устройство с imei = " + imei + " для пользователя: " + userName);
+            Log.d(TAG, "Регистрируем/отвязываем мобильное устройство с imei = " + imei + " для пользователя: " + userName);
             String uri  = addQueryParameter(loginUrl, "logon_name", userName, true);
             uri = addQueryParameter(uri, "logon_pwd", password, false);
             uri = addQueryParameter(uri, "IMEI", imei, false);
@@ -36,7 +36,7 @@ public class RegMobileTask extends AsyncTask<String, Void, String> {
             Log.d(TAG, "Запрос прошел успешно, результат: " + document.text());
             return document.text();
         } catch (Exception e) {
-            Log.e(TAG, "Ошибка при регистрации мобильного устройства: " + e.getLocalizedMessage());
+            Log.e(TAG, "Ошибка при регистрации/отвязке мобильного устройства: " + e.getLocalizedMessage());
             return null;
         }
     }

@@ -18,11 +18,14 @@ public class GetNewsTask extends AsyncTask<String, Void, String> {
         try {
             Log.d(TAG, "Получение списка новостей");
             String sessionId = UserPreferences.getInstance().getPhpSessId();
+            Connection.Response connection;
             if (FormatUtils.isEmpty(sessionId)) {
-                Log.e(TAG, "Ошибка при получении позиции абитуриента в конкурсных группах, пользователь не авторизован");
-                return "";
+                Log.d(TAG, "Пользователь не авторизован, ид сессии не передается");
+                connection = Jsoup.connect(urls[0]).execute();
+            } else {
+                connection = Jsoup.connect(urls[0]).cookie("PHPSESSID", sessionId).execute();
             }
-            Connection.Response connection = Jsoup.connect(urls[0]).cookie("PHPSESSID", sessionId).execute();
+
             Document document = connection.parse();
             Log.d(TAG, "Запрос прошел успешно, результат: " + document.text());
             return document.text();

@@ -174,10 +174,12 @@ public class ServiceUtils {
 
             if (!FormatUtils.isEmpty(FIOandBD) && FIOandBD.startsWith("1")) {
                 Log.d(TAG, "Авторизация пользователя прошла успешно, ФИО и даты рождения: " + FIOandBD);
-                UserPreferences.getInstance().setFIO(FIOandBD.split(" ")[1]);
-                UserPreferences.getInstance().setBirthDate(FIOandBD.split(" ")[2]);
+                UserPreferences.getInstance().setFIO(FIOandBD.split(",")[1]);
+                UserPreferences.getInstance().setBirthDate(FIOandBD.split(",")[2]);
             } else {
-                throw  new ExecutionException(new Throwable());
+                Log.e(TAG, "Ошибка при авторизации пользоватлея: " + FIOandBD);
+                UserPreferences.getInstance().setFIO("");
+                UserPreferences.getInstance().setBirthDate("");
             }
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при авторизации: " + FIOandBD);

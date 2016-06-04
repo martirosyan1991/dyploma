@@ -15,7 +15,7 @@ import com.dyploma.garik.dyploma.R;
 
 import java.util.concurrent.ExecutionException;
 
-import info.androidhive.slidingmenu.Tasks.RegMobileTask;
+import info.androidhive.slidingmenu.Tasks.RegOrDelMobileTask;
 import info.androidhive.slidingmenu.Utils.ServiceUtils;
 
 public class AuthorizationFragment extends Fragment {
@@ -38,7 +38,7 @@ public class AuthorizationFragment extends Fragment {
                 String password = ((TextView) rootView.findViewById(R.id.password_editText)).getText().toString();
                 String imei  = UserPreferences.getInstance().getImei();
                 try {
-                    String regMobileResponse = new RegMobileTask(getActivity().getResources().getString(R.string.reg_mobile),
+                    String regMobileResponse = new RegOrDelMobileTask(getActivity().getResources().getString(R.string.reg_mobile),
                             username, password, imei).execute().get();
                     if (regMobileResponse.startsWith("1")) {
                         Log.d(TAG, "Регистрация мобильного устройства прошла успешно");
@@ -88,7 +88,7 @@ public class AuthorizationFragment extends Fragment {
                 String password = ((TextView) rootView.findViewById(R.id.password_editText)).getText().toString();
                 String imei  = UserPreferences.getInstance().getImei();
                 try {
-                    new RegMobileTask(getActivity().getResources().getString(R.string.del_mobile),
+                    new RegOrDelMobileTask(getActivity().getResources().getString(R.string.del_mobile),
                             username, password, imei).execute().get();
                     Log.d(TAG, "Отвязка мобильного устройства прошла успешно");
                 } catch (InterruptedException | ExecutionException e) {
