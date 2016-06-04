@@ -25,10 +25,6 @@ public class GetNewsDetailsTask extends AsyncTask<String, Void, String> {
         this.callback = callback;
     }
 
-    public GetNewsDetailsTask(Callback<String> callback) {
-        this.callback = callback;
-    }
-
     protected String doInBackground(String... urls) {
         String result;
         try {

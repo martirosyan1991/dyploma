@@ -259,6 +259,20 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public void onBackPressed() {
+
+        int count = getFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStack();
+        }
+
+    }
+
     private void logon() {
         Log.d(TAG, "Запрос на авторизацию пользователя");
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);

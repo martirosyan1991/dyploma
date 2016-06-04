@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.dyploma.garik.dyploma.R;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,11 +47,11 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 Toast.makeText(getActivity(), "we got news with id = " + newsIds.get(position), Toast.LENGTH_SHORT).show();
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 Bundle arguments = new Bundle();
-                arguments.putInt(OneNewsFragment.NEWS_ID_KEY, newsIds.get(position));
-                Fragment fragment = new OneNewsFragment();
+                arguments.putInt(NewsDetailsFragment.NEWS_ID_KEY, newsIds.get(position));
+                Fragment fragment = new NewsDetailsFragment();
                 fragment.setArguments(arguments);
                 fragmentManager.beginTransaction()
-                        .replace(R.id.frame_container, fragment).commit();
+                        .replace(R.id.frame_container, fragment).addToBackStack(null).commit();
             }
         });
         refreshNewsList();

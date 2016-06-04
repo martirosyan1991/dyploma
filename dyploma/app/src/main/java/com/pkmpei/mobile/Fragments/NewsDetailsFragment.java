@@ -15,7 +15,7 @@ import com.dyploma.garik.dyploma.R;
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 
-public class OneNewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class NewsDetailsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private static final String TAG = "QueueFragment";
 
