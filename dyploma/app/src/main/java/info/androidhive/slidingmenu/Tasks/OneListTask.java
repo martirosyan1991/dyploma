@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import info.androidhive.slidingmenu.Callback;
 import info.androidhive.slidingmenu.UserPreferences;
 import info.androidhive.slidingmenu.Utils.FormatUtils;
 
@@ -16,8 +17,14 @@ import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 
 public class OneListTask extends AsyncTask<String, Void, String> {
 
+    private final Callback<String> callback;
     private static final String TAG = "OneListTask"
             ;
+
+    public OneListTask(Callback<String> callback) {
+        this.callback = callback;
+    }
+
     protected String doInBackground(String... urls) {
         try {
             Log.d(TAG, "Получения содержимого одного конкурсного списка.");
@@ -31,6 +38,9 @@ public class OneListTask extends AsyncTask<String, Void, String> {
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
                 response.append(inputLine);
+            }
+            if (callback != null) {
+                callback.call(response.toString());
             }
             return response.toString();
         } catch (Exception e) {

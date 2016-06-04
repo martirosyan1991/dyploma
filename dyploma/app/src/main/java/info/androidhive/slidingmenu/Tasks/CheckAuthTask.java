@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import info.androidhive.slidingmenu.Callback;
 import info.androidhive.slidingmenu.UserPreferences;
 import info.androidhive.slidingmenu.Utils.FormatUtils;
 
@@ -20,6 +21,12 @@ import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 public class CheckAuthTask extends AsyncTask<String, Void, String> {
 
     private static final String TAG = "LogonTask";
+
+    Callback<String> callback;
+
+    public CheckAuthTask(Callback<String> callback) {
+        this.callback = callback;
+    }
 
     protected String doInBackground(String... urls) {
         try {
@@ -31,6 +38,9 @@ public class CheckAuthTask extends AsyncTask<String, Void, String> {
             }
             Connection.Response connection = Jsoup.connect(urls[0]).cookie("PHPSESSID", sessionId).execute();
             Document document = connection.parse();
+            if (callback != null) {
+                callback.call(document.text());
+            }
             Log.d(TAG, "Запрос прошел успешно, результат: " + document.text());
             return document.text();
         } catch (Exception e) {

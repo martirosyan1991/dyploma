@@ -36,7 +36,12 @@ public class SignedInFragment extends Fragment {
                 String imei  = UserPreferences.getInstance().getImei();
                 try {
                     new RegOrDelMobileTask(getActivity().getResources().getString(R.string.del_mobile),
-                            username, password, imei).execute().get();
+                            username, password, imei, new Callback<String>() {
+                        @Override
+                        public void call(String input) {
+
+                        }
+                    }).execute().get();
                     Log.d(TAG, "Отвязка мобильного устройства прошла успешно");
                 } catch (InterruptedException | ExecutionException e) {
                     Log.e(TAG, "Отвязка мобильного устройства завершилась ошибкой: " + e.getLocalizedMessage());

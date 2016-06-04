@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import info.androidhive.slidingmenu.Callback;
 import info.androidhive.slidingmenu.News;
 import info.androidhive.slidingmenu.PreStudent;
 import info.androidhive.slidingmenu.Tasks.CheckAuthTask;
@@ -33,20 +34,20 @@ public class ServiceUtils {
 
 
     private final static String TAG = "ServiceUtils";
-    public static Map<String, Integer> getQueueNumbers(Context context) {
+    public static Map<String, Integer> getQueueNumbers(Context context, Callback<String> callback) {
         String number_query = null;
         try {
-            number_query = new LoadTask().execute(context.getResources().getString(R.string.number_query)).get();
+            number_query = new LoadTask(callback).execute(context.getResources().getString(R.string.number_query)).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return  FormatUtils.getQueueNumbers(number_query);
     }
 
-    public static int getQueueLoad(Context context) {
+    public static int getQueueLoad(Context context, Callback<String> callback) {
         String load_query = null;
         try {
-            load_query = new LoadTask().execute(context.getResources().getString(R.string.load_query)).get();
+            load_query = new LoadTask(callback).execute(context.getResources().getString(R.string.load_query)).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -55,19 +56,19 @@ public class ServiceUtils {
         return  FormatUtils.getLoadFactor(load_query);
     }
 
-    public static Map<String, String> getLists(Context context) {
+    public static Map<String, String> getLists(Context context, Callback<String> callback) {
 
         Log.d(TAG, "Получение всех конкурсных списков");
         Map<String, String> fullList = new HashMap<>();
         try {
             String baseUri = context.getResources().getString(R.string.list_base_uri);
-            String load_query = new LoadTask().execute(context.getResources().getString(R.string.lists_and_orders)).get();
+            String load_query = new LoadTask(callback).execute(context.getResources().getString(R.string.lists_and_orders)).get();
             Document doc  = Jsoup.parse(load_query);
             Elements links = doc.select("a[href~=list[a-z]?[0-9]*[a-z].html]");
 
 
             for (int i = 0; i < links.size(); i++) {
-                Document tempDoc = Jsoup.parse(new LoadTask().execute(baseUri + links.get(i).attr("href")).get());
+                Document tempDoc = Jsoup.parse(new LoadTask(callback).execute(baseUri + links.get(i).attr("href")).get());
                 Elements internalLinks = tempDoc.select("a[href~=list[a-z]?[0-9]*[a-z].html]");
                 for (int j = 0; j < internalLinks.size(); j++) {
                     fullList.put(baseUri + internalLinks.get(j).attr("href"), internalLinks.get(j).text());
@@ -79,12 +80,12 @@ public class ServiceUtils {
         return fullList;
     }
 
-    public static List<News> getNews(Context context) {
+    public static List<News> getNews(Context context, Callback<String> callback) {
 
         Log.d(TAG, "Получение списка новостей");
         List<News> fullList = new LinkedList<>();
         try {
-            String load_query = new GetNewsTask().execute(context.getResources().getString(R.string.get_news)).get();
+            String load_query = new GetNewsTask(callback).execute(context.getResources().getString(R.string.get_news)).get();
             fullList = FormatUtils.getNews(load_query);
             System.out.println("yyy список новостей = " + load_query);
         } catch (InterruptedException | ExecutionException e) {
@@ -93,13 +94,13 @@ public class ServiceUtils {
         return fullList;
     }
 
-    public static Map<String, String> getListsForCurrentUser(Context context) {
+    public static Map<String, String> getListsForCurrentUser(Context context, Callback<String> callback) {
 
         // TODO добавить обработку списка групп
         Log.d(TAG, "Получение конкурсных списков для текущего пользователя");
         Map<String, String> fullList = new HashMap<>();
         try {
-            String load_query = new GetGroupsTask().execute(context.getResources().getString(R.string.get_groups)).get();
+            String load_query = new GetGroupsTask(callback).execute(context.getResources().getString(R.string.get_groups)).get();
             System.out.println("yyy loadQuery for groups = " + load_query);
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении конкурсных списков: " + e.getLocalizedMessage());
@@ -107,21 +108,21 @@ public class ServiceUtils {
         return fullList;
     }
 
-    public static String getConcursGroup(Context context) {
+    public static String getConcursGroup(Context context, Callback<String> callback) {
         try {
-            return new GetConcursTask().execute(context.getResources().getString(R.string.get_concurs)).get();
+            return new GetConcursTask(callback).execute(context.getResources().getString(R.string.get_concurs)).get();
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении позиции абитуриента в конкурсной группе: " + e.getLocalizedMessage());
             return "";
         }
     }
 
-    public static List<PreStudent> getOneList(String listUri) {
+    public static List<PreStudent> getOneList(String listUri, Callback<String> callback) {
         Log.d(TAG, "Получение содержимого списка: " + listUri);
 
         List<PreStudent> allPreStudents = new LinkedList<>();
         try {
-            String load_query = new OneListTask().execute(listUri).get();
+            String load_query = new OneListTask(callback).execute(listUri).get();
             Document doc  = Jsoup.parse(load_query);
             Elements links = doc.select("table[class=\"thin-grid competitive-group-table\"]");
 
@@ -166,11 +167,11 @@ public class ServiceUtils {
     }
 
 
-    public static void logon(String logon_query, String mobile_pwd) {
+    public static void logon(String logon_query, String mobile_pwd, Callback<String> callback) {
         String FIOandBD = null;
         try {
             FIOandBD = new LogonTask(logon_query,
-                    UserPreferences.getInstance().getImei(),mobile_pwd).execute().get();
+                    UserPreferences.getInstance().getImei(),mobile_pwd, callback).execute().get();
 
             if (!FormatUtils.isEmpty(FIOandBD) && FIOandBD.startsWith("1")) {
                 Log.d(TAG, "Авторизация пользователя прошла успешно, ФИО и даты рождения: " + FIOandBD);
@@ -189,15 +190,18 @@ public class ServiceUtils {
     public static void checkAuth(String checkQuery) {
         String result = null;
         try {
-            result = new CheckAuthTask().execute(checkQuery).get();
-
-            if (!FormatUtils.isEmpty(result)) {
-                Log.d(TAG, "Проверка авторизации прошла успешно: " + result);
-            } else {
-                throw  new ExecutionException(new Throwable());
-            }
+            result = new CheckAuthTask(new Callback<String>() {
+                @Override
+                public void call(String input) {
+                    if (!FormatUtils.isEmpty(input)) {
+                        Log.d(TAG, "Проверка авторизации прошла успешно: " + input);
+                    } else {
+                        Log.e(TAG, "Проверка авторизации закончилась неудачно: " + input);
+                    }
+                }
+            }).execute(checkQuery).get();
         } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Ошибка при проверке авторизации: " + result);
+            Log.e(TAG, "Ошибка при проверке авторизации: " + result + "{" + e.getLocalizedMessage() + "}");
         }
     }
 }

@@ -39,7 +39,13 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
         groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                List<PreStudent> allPreStudents = ServiceUtils.getOneList(((TextView) view).getText().toString());
+                List<PreStudent> allPreStudents = ServiceUtils.getOneList(((TextView) view).getText().toString(),
+                        new Callback<String>() {
+                            @Override
+                            public void call(String input) {
+
+                            }
+                        });
             }
         });
         refreshData();
@@ -64,7 +70,12 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void refreshData() {
-        Map<String, String> listLinks = ServiceUtils.getListsForCurrentUser(getActivity());
+        Map<String, String> listLinks = ServiceUtils.getListsForCurrentUser(getActivity(), new Callback<String>() {
+            @Override
+            public void call(String input) {
+
+            }
+        });
         int mapSize = listLinks.values().size();
         String [] queueLines = listLinks.keySet().toArray(new String[mapSize]);
         String [] queueTitles = new String[mapSize];
@@ -76,6 +87,11 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
         groupLinks.clear();
         groupLinks.putAll(listLinks);
 
-        ServiceUtils.getConcursGroup(getActivity());
+        ServiceUtils.getConcursGroup(getActivity(), new Callback<String>() {
+            @Override
+            public void call(String input) {
+
+            }
+        });
     }
 }

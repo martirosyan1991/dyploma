@@ -7,6 +7,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import info.androidhive.slidingmenu.Callback;
 import info.androidhive.slidingmenu.UserPreferences;
 import info.androidhive.slidingmenu.Utils.FormatUtils;
 
@@ -15,13 +16,15 @@ import static info.androidhive.slidingmenu.Utils.FormatUtils.addQueryParameter;
 public class LogonTask extends AsyncTask<String, Void, String> {
 
     private static final String TAG = "LogonTask";
+    private final Callback<String> callback;
     private String logonUrl;
     private String mobilePassword;
     private String imei;
-    public LogonTask(String logonUrl, String imei, String mobilePassword) {
+    public LogonTask(String logonUrl, String imei, String mobilePassword, Callback<String> callback) {
         this.logonUrl = logonUrl;
         this.imei = imei;
         this.mobilePassword = mobilePassword;
+        this.callback = callback;
     }
 
     protected String doInBackground(String... urls) {
@@ -41,6 +44,9 @@ public class LogonTask extends AsyncTask<String, Void, String> {
                     UserPreferences.getInstance().setPhpSessId(connection.cookie("PHPSESSID"));
                 } else {
                     Log.d(TAG, "Id сессии не был получен");
+                }
+                if (callback != null) {
+                    callback.call(document.text());
                 }
             }
             return document.text();

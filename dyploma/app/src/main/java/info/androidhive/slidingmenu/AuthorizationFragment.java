@@ -39,7 +39,12 @@ public class AuthorizationFragment extends Fragment {
                 String imei  = UserPreferences.getInstance().getImei();
                 try {
                     String regMobileResponse = new RegOrDelMobileTask(getActivity().getResources().getString(R.string.reg_mobile),
-                            username, password, imei).execute().get();
+                            username, password, imei, new Callback<String>() {
+                        @Override
+                        public void call(String input) {
+
+                        }
+                    }).execute().get();
                     if (regMobileResponse.startsWith("1")) {
                         Log.d(TAG, "Регистрация мобильного устройства прошла успешно");
                         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -48,7 +53,13 @@ public class AuthorizationFragment extends Fragment {
                         editor.commit();
                         // если регистрация устройства прошла успешно, то проходим авторизацию
                         ServiceUtils.logon(getActivity().getResources().getString(R.string.logon),
-                                sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
+                                sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"),
+                                new Callback<String>() {
+                                    @Override
+                                    public void call(String input) {
+
+                                    }
+                                });
                     } else {
                         Log.e(TAG, "Регистрация мобильного устройства не завершена, код ошибки: " + regMobileResponse.substring(0,1));
                     }
@@ -66,7 +77,13 @@ public class AuthorizationFragment extends Fragment {
                         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                         // если регистрация устройства прошла успешно, то проходим авторизацию
                         ServiceUtils.logon(getActivity().getResources().getString(R.string.logon),
-                                sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
+                                sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"),
+                                new Callback<String>() {
+                                    @Override
+                                    public void call(String input) {
+
+                                    }
+                                });
 
             }
         });
@@ -89,7 +106,12 @@ public class AuthorizationFragment extends Fragment {
                 String imei  = UserPreferences.getInstance().getImei();
                 try {
                     new RegOrDelMobileTask(getActivity().getResources().getString(R.string.del_mobile),
-                            username, password, imei).execute().get();
+                            username, password, imei, new Callback<String>() {
+                        @Override
+                        public void call(String input) {
+
+                        }
+                    }).execute().get();
                     Log.d(TAG, "Отвязка мобильного устройства прошла успешно");
                 } catch (InterruptedException | ExecutionException e) {
                     Log.e(TAG, "Отвязка мобильного устройства завершилась ошибкой: " + e.getLocalizedMessage());

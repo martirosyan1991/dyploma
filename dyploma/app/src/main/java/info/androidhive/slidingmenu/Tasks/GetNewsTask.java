@@ -7,14 +7,21 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import info.androidhive.slidingmenu.Callback;
 import info.androidhive.slidingmenu.UserPreferences;
 import info.androidhive.slidingmenu.Utils.FormatUtils;
 
 public class GetNewsTask extends AsyncTask<String, Void, String> {
 
+    private final Callback<String> callback;
     private static final String TAG = "GetNewsTask";
 
+    public GetNewsTask(Callback<String> callback) {
+        this.callback = callback;
+    }
+
     protected String doInBackground(String... urls) {
+        String result;
         try {
             Log.d(TAG, "Получение списка новостей");
             String sessionId = UserPreferences.getInstance().getPhpSessId();
@@ -27,8 +34,12 @@ public class GetNewsTask extends AsyncTask<String, Void, String> {
             }
 
             Document document = connection.parse();
-            Log.d(TAG, "Запрос прошел успешно, результат: " + document.text());
-            return document.text();
+            result = document.text();
+            Log.d(TAG, "Запрос прошел успешно, результат: " + result);
+            if (callback != null && result.startsWith("1")) {
+                callback.call(result);
+            }
+            return result;
         } catch (Exception e) {
             Log.e(TAG, "Ошибка при получении списка новостей: " + e.getLocalizedMessage());
             return "";

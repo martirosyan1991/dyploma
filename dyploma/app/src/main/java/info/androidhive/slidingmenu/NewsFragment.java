@@ -64,7 +64,12 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         Log.d(TAG, "Обновление списка новостей");
         ListView queueList = (ListView) mSwipeRefreshLayout.findViewById(R.id.news_list);
-        List<News> newsList = ServiceUtils.getNews(getActivity());
+        List<News> newsList = ServiceUtils.getNews(getActivity(), new Callback<String>() {
+            @Override
+            public void call(String input) {
+
+            }
+        });
         int listSize = newsList.size();
         String [] queueTitles = new String[listSize];
         for (int i = 0; i < listSize; i++) {

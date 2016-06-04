@@ -68,7 +68,12 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         Log.d(TAG, "Обновление состояния очередей");
         // формируем список очередей по формату А - 10, Б - 15 и т.д.
         ListView queueList = (ListView) queueLayout.findViewById(R.id.queue_list);
-        Map<String, Integer> queueNumbersMap = ServiceUtils.getQueueNumbers(getActivity());
+        Map<String, Integer> queueNumbersMap = ServiceUtils.getQueueNumbers(getActivity(), new Callback<String>() {
+            @Override
+            public void call(String input) {
+
+            }
+        });
         int mapSize = queueNumbersMap.values().size();
         Integer [] numbers = queueNumbersMap.values().toArray(new Integer[mapSize]);
         String [] queueLines = queueNumbersMap.keySet().toArray(new String[mapSize]);

@@ -258,6 +258,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Запрос на авторизацию пользователя");
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         ServiceUtils.logon(this.getResources().getString(R.string.logon),
-                sharedPref.getString(this.getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"));
+                sharedPref.getString(this.getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"),
+                new Callback<String>() {
+                    @Override
+                    public void call(String input) {
+
+                    }
+                });
     }
 }
