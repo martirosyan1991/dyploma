@@ -9,16 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.dyploma.garik.dyploma.R;
 
 import com.pkmpei.mobile.Callback;
+import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 
 public class SignedInFragment extends Fragment {
 
     private static final String TAG = "AuthorizationFragment";
     private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView fioTextView;
+    private TextView birthDateTextView;
 
     public SignedInFragment(){}
 
@@ -29,6 +33,10 @@ public class SignedInFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_signed_in, container, false);
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refreshSignedInFragment);
+        fioTextView = (TextView) rootView.findViewById(R.id.fioTextView);
+        fioTextView.setText(UserPreferences.getInstance().getFIO());
+        birthDateTextView = (TextView) rootView.findViewById(R.id.birthDateTextView);
+        birthDateTextView.setText(UserPreferences.getInstance().getBirthDate());
         Button cancelButton = (Button) rootView.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
