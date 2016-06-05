@@ -20,7 +20,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
@@ -115,26 +115,33 @@ public class MainActivity extends AppCompatActivity {
 
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_hamburger, //nav menu toggle icon
                 R.string.app_name, // nav drawer open - description for accessibility
                 R.string.app_name // nav drawer close - description for accessibility
         ) {
-
+            @Override
             public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
                 getSupportActionBar().setTitle(mTitle);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_hamburger);
                 // calling onPrepareOptionsMenu() to show action bar icons
                 invalidateOptionsMenu();
             }
 
+            @Override
             public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                super.onDrawerSlide(drawerView, 0); // this disables the arrow @ completed state
                 getSupportActionBar().setTitle(mDrawerTitle);
-                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_hamburger);
-                // calling onPrepareOptionsMenu() to hide action bar icons
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
                 invalidateOptionsMenu();
             }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, 0); // this disables the animation
+            }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item

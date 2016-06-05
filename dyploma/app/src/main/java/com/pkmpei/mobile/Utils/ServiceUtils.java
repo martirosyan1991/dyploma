@@ -98,12 +98,23 @@ public class ServiceUtils {
         return fullList;
     }
 
-    public static Spanned getNewsDetails(Context context, int newsId, Callback<String> callback) {
+    public static News getNewsDetails(Context context, int newsId, Callback<String> callback) {
         Log.d(TAG, "Получение содержимого новости");
         try {
             String load_query = new GetNewsDetailsTask(newsId, callback)
                     .execute(context.getResources().getString(R.string.get_news_detail)).get();
-            return Html.fromHtml(load_query);
+            if (!FormatUtils.isEmpty(load_query) && load_query.startsWith("1###")) {
+                Log.d(TAG, "Содержимое новости получено");
+                load_query = load_query.substring("1###".length());
+                String [] newsContent = load_query.split("##");
+                News news = new News();
+                news.setId(Integer.parseInt(newsContent[0]));
+                news.setDate(newsContent[1]);
+                news.setTitle(newsContent[2]);
+                news.setText(newsContent[3]);
+                return news;
+            }
+            return null;
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении содержимого новости: " + e.getLocalizedMessage());
         }

@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.dyploma.garik.dyploma.R;
 
 import com.pkmpei.mobile.Callback;
+import com.pkmpei.mobile.News;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 
 public class NewsDetailsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
@@ -22,6 +24,8 @@ public class NewsDetailsFragment extends Fragment implements SwipeRefreshLayout.
     public static final String NEWS_ID_KEY = "NEWS_ID_KEY";
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView newsText;
+    private TextView newsTitle;
+    private TextView newsDate;
     private int newsId;
 
     @Override
@@ -34,6 +38,8 @@ public class NewsDetailsFragment extends Fragment implements SwipeRefreshLayout.
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_news_details);
         swipeRefreshLayout.setOnRefreshListener(this);
         newsText = (TextView) rootView.findViewById(R.id.news_details_text_view);
+        newsDate = (TextView) rootView.findViewById(R.id.news_date);
+        newsTitle = (TextView) rootView.findViewById(R.id.news_title);
         newsId = getArguments().getInt(NEWS_ID_KEY);
 
         refreshOneNews();
@@ -47,7 +53,7 @@ public class NewsDetailsFragment extends Fragment implements SwipeRefreshLayout.
             public void run() {
                 refreshOneNews();
             }
-        }, 3000);
+        }, 1000);
     }
 
     /**
@@ -56,11 +62,20 @@ public class NewsDetailsFragment extends Fragment implements SwipeRefreshLayout.
     private void refreshOneNews() {
         Log.d(TAG, "Обновление содержимого новости №" + newsId);
         swipeRefreshLayout.setRefreshing(true);
-        newsText.setText(ServiceUtils.getNewsDetails(getActivity(), newsId, new Callback<String>() {
+        News news = ServiceUtils.getNewsDetails(getActivity(), newsId, new Callback<String>() {
             @Override
             public void call(String input) {
                 swipeRefreshLayout.setRefreshing(false);
             }
-        }));
+        });
+        if (news != null) {
+            newsTitle.setText(news.getTitle());
+            newsDate.setText(news.getDate());
+            newsText.setText(Html.fromHtml(news.getText()));
+        } else {
+            newsTitle.setText("");
+            newsDate.setText("");
+            newsText.setText("Ошибка при получении содержимого новости");
+        }
     }
 }

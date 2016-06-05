@@ -40,12 +40,13 @@ public class GetNewsDetailsTask extends AsyncTask<String, Void, String> {
             }
 
             Document document = connection.parse();
-            result = document.toString();
+            result = document.body().toString();
+            result = result.replace("<body>", "").replace("</body>", "");
             Log.d(TAG, "Запрос прошел успешно, результат: " + result);
             if (callback != null && result.startsWith("1")) {
                 callback.call(result);
             }
-            return result;
+            return result.trim();
         } catch (Exception e) {
             Log.e(TAG, "Ошибка при получении списка новостей: " + e.getLocalizedMessage());
             return "";
