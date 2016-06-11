@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
     <GridLayout
         android:id="@+id/concurs_group_table"
         android:layout_width="wrap_content"
@@ -22,5 +26,6 @@
         <TextView android:text="Физ." android:layout_rowSpan="1" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
         <TextView android:text="Рус." android:layout_rowSpan="1" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
         </GridLayout>
+    </HorizontalScrollView>
 
-</HorizontalScrollView>
+</ScrollView>

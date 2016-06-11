@@ -53,10 +53,8 @@ public class ServiceUtils {
         String load_query = null;
         try {
             load_query = new LoadTask(callback).execute(context.getResources().getString(R.string.load_query)).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Ошибка при обработке запроса загруженности очереди", e);
         }
         return  FormatUtils.getLoadFactor(load_query);
     }

@@ -18,12 +18,11 @@ public class FormatUtils {
 
     public static int getLoadFactor(String load) {
         Log.d(TAG, "Обрабатываем загруженность очереди");
-        Pattern p = Pattern.compile("STATUS: OK.*");
-        Matcher matcher = p.matcher(load);
-        if (matcher.matches()) {
-            return Integer.parseInt(load.substring("STATUS: OK".length()));
-        } else {
-            Log.e(TAG, "Загруженность очереди не прошла проверку регулярным выражением: " + load);
+        String loadNumber = load.substring(load.length() - 2, load.length()).trim();
+        try {
+            return Integer.parseInt(loadNumber);
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Ошибка при обработки загруденности очереди = " + loadNumber, e);
             return -1;
         }
     }
@@ -31,17 +30,14 @@ public class FormatUtils {
     public static Map<String, Integer> getQueueNumbers(String input) {
         Log.d(TAG, "Получаем номера электронной очереди");
         Map<String, Integer> map = new TreeMap<>();
-        Pattern p = Pattern.compile("STATUS: OK.*");
-        Matcher matcher = p.matcher(input);
-        if (matcher.matches()) {
-            String result = input.substring("STATUS: OK".length());
-            p = Pattern.compile("([А-Я]) - (\\d+)");
-            String [] some = result.split(";");
-            for (String s :some) {
-                matcher = p.matcher(s);
-                if (matcher.find()) {
-                    map.put(matcher.group(1), Integer.parseInt(matcher.group(2)));
-                }
+        Pattern p;
+        Matcher matcher;
+        String[] some = input.split(";");
+        p = Pattern.compile("([А-Я]) - (\\d+)");
+        for (String s : some) {
+            matcher = p.matcher(s);
+            if (matcher.find()) {
+                map.put(matcher.group(1), Integer.parseInt(matcher.group(2)));
             }
         }
         if (map.size() == 0) {

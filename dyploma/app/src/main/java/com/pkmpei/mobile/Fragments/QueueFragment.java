@@ -42,23 +42,22 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         queueLayout = (LinearLayout) rootView.findViewById(R.id.queue_layout);
         queueLoadLayout = (LinearLayout) rootView.findViewById(R.id.queue_load_layout);
-        refreshQueueStatus();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        refreshQueueStatus();
+
         return rootView;
     }
 
     @Override
     public void onRefresh() {
-        mSwipeRefreshLayout.setRefreshing(true);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 refreshQueueStatus();
-                mSwipeRefreshLayout.setRefreshing(false);
             }
-        }, 3000);
+        }, 1000);
     }
 
     /**
@@ -66,13 +65,18 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      */
     private void refreshQueueStatus() {
 
+        mSwipeRefreshLayout.setRefreshing(true);
         Log.d(TAG, "Обновление состояния очередей");
         // формируем список очередей по формату А - 10, Б - 15 и т.д.
         ListView queueList = (ListView) queueLayout.findViewById(R.id.queue_list);
         Map<String, Integer> queueNumbersMap = ServiceUtils.getQueueNumbers(getActivity(), new Callback<String>() {
             @Override
             public void call(String input) {
-
+                getActivity().runOnUiThread(new Runnable() {
+                                  public void run() {
+                                      mSwipeRefreshLayout.setRefreshing(false);
+                                  }
+                              });
             }
         });
         int mapSize = queueNumbersMap.values().size();
@@ -86,19 +90,32 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         queueList.setAdapter(adapter);
 
 
-        // выводим загруженность очереди в формате человечков
-        LinearLayout queueLoadList = (LinearLayout) queueLoadLayout.findViewById(R.id.linear);
-
-        Log.d(TAG, "Выводим загруженность очереди в формате человечков");
-        for (int i = 0; i < 2; i++) {
-            ImageView imageView = new ImageView(new ContextThemeWrapper(getActivity(), R.style.AppTheme_OneColoredMan));
-            int mycolor = getResources().getColor(R.color.colorPrimary);
-            Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.green_man).mutate();
-            drawable.setColorFilter(mycolor, PorterDuff.Mode.SRC_ATOP);
-            imageView.setImageDrawable(drawable);
-            imageView.setImageDrawable(drawable);
-            imageView.setLayoutParams(new DrawerLayout.LayoutParams(FormatUtils.convertDpToPixels(getActivity(), 20), FormatUtils.convertDpToPixels(getActivity(), 35)));
-            queueLoadList.addView(imageView);
+        mSwipeRefreshLayout.setRefreshing(true);
+        int loadNumber = ServiceUtils.getQueueLoad(getActivity(), new Callback<String>() {
+            @Override
+            public void call(String input) {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        });
+        if (loadNumber != -1) {
+            // выводим загруженность очереди в формате человечков
+            LinearLayout queueLoadList = (LinearLayout) queueLoadLayout.findViewById(R.id.linear);
+            queueLoadList.removeAllViews();
+            Log.d(TAG, "Выводим загруженность очереди в формате человечков, показатель равен " + loadNumber);
+            for (int i = 0; i < loadNumber; i++) {
+                ImageView imageView = new ImageView(new ContextThemeWrapper(getActivity(), R.style.AppTheme_OneColoredMan));
+                int mycolor = getResources().getColor(R.color.colorPrimary);
+                Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.green_man).mutate();
+                drawable.setColorFilter(mycolor, PorterDuff.Mode.SRC_ATOP);
+                imageView.setImageDrawable(drawable);
+                imageView.setImageDrawable(drawable);
+                imageView.setLayoutParams(new DrawerLayout.LayoutParams(FormatUtils.convertDpToPixels(getActivity(), 20), FormatUtils.convertDpToPixels(getActivity(), 35)));
+                queueLoadList.addView(imageView);
+            }
         }
     }
 }
