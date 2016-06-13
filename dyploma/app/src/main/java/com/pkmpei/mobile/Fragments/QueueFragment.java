@@ -126,5 +126,15 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 queueLoadList.addView(imageView);
             }
         }
+        for (int i = mapSize; i < 10; i++) {
+            ImageView imageView = new ImageView(new ContextThemeWrapper(getActivity(), R.style.AppTheme_OneColoredMan));
+            int myColor = getResources().getColor(R.color.light_grey_man);
+            Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.green_man).mutate();
+            drawable.setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
+            imageView.setImageDrawable(drawable);
+            imageView.setImageDrawable(drawable);
+            imageView.setLayoutParams(new DrawerLayout.LayoutParams(FormatUtils.convertDpToPixels(getActivity(), 25), FormatUtils.convertDpToPixels(getActivity(), 45)));
+            queueLoadList.addView(imageView);
+        }
     }
 }

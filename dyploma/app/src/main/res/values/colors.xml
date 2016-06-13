@@ -13,4 +13,5 @@
     <color name="green_man_color">#00FF00</color>
     <color name="yellow_man_color">#FFFF00</color>
     <color name="red_man_color">#FF0000</color>
+    <color name="light_grey_man">#c5c4c4</color>
 </resources>
