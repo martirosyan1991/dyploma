@@ -80,14 +80,16 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         });
         int mapSize = queueNumbersMap.values().size();
-        Integer [] numbers = queueNumbersMap.values().toArray(new Integer[mapSize]);
-        String [] queueLines = queueNumbersMap.keySet().toArray(new String[mapSize]);
-        String [] queueTitles = new String[mapSize];
-        for (int i = 0; i < mapSize; i++) {
-            queueTitles[i] = queueLines[i] + " = " + numbers[i];
+        if (mapSize != 0 ) {
+            Integer [] numbers = queueNumbersMap.values().toArray(new Integer[mapSize]);
+            String [] queueLines = queueNumbersMap.keySet().toArray(new String[mapSize]);
+            String [] queueTitles = new String[mapSize];
+            for (int i = 0; i < mapSize; i++) {
+                queueTitles[i] = queueLines[i] + " = " + numbers[i];
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, queueTitles);
+            queueList.setAdapter(adapter);
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, queueTitles);
-        queueList.setAdapter(adapter);
 
 
         mSwipeRefreshLayout.setRefreshing(true);
@@ -101,19 +103,26 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 });
             }
         });
+        LinearLayout queueLoadList = (LinearLayout) queueLoadLayout.findViewById(R.id.linear);
+        queueLoadList.removeAllViews();
         if (loadNumber != -1) {
             // выводим загруженность очереди в формате человечков
-            LinearLayout queueLoadList = (LinearLayout) queueLoadLayout.findViewById(R.id.linear);
-            queueLoadList.removeAllViews();
             Log.d(TAG, "Выводим загруженность очереди в формате человечков, показатель равен " + loadNumber);
-            for (int i = 0; i < loadNumber; i++) {
+            for (int i = 0; i < mapSize; i++) {
                 ImageView imageView = new ImageView(new ContextThemeWrapper(getActivity(), R.style.AppTheme_OneColoredMan));
-                int mycolor = getResources().getColor(R.color.colorPrimary);
+                int myColor;
+                if (loadNumber <= 5) {
+                    myColor = getResources().getColor(R.color.green_man_color);
+                } else if (loadNumber > 5 && loadNumber < 8) {
+                    myColor = getResources().getColor(R.color.yellow_man_color);
+                } else {
+                    myColor = getResources().getColor(R.color.red_man_color);
+                }
                 Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.green_man).mutate();
-                drawable.setColorFilter(mycolor, PorterDuff.Mode.SRC_ATOP);
+                drawable.setColorFilter(myColor, PorterDuff.Mode.SRC_ATOP);
                 imageView.setImageDrawable(drawable);
                 imageView.setImageDrawable(drawable);
-                imageView.setLayoutParams(new DrawerLayout.LayoutParams(FormatUtils.convertDpToPixels(getActivity(), 20), FormatUtils.convertDpToPixels(getActivity(), 35)));
+                imageView.setLayoutParams(new DrawerLayout.LayoutParams(FormatUtils.convertDpToPixels(getActivity(), 25), FormatUtils.convertDpToPixels(getActivity(), 45)));
                 queueLoadList.addView(imageView);
             }
         }

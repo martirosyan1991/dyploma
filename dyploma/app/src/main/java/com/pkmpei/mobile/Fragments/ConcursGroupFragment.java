@@ -32,6 +32,12 @@ public class ConcursGroupFragment extends Fragment {
         List<PreStudent> preStudents = ServiceUtils.getOneList("http://www.pkmpei.ru/inform/list14f.html", null);
         GridLayout concursGroupTable = (GridLayout) rootView.findViewById(R.id.concurs_group_table);
 
+
+        if (preStudents.isEmpty()) {
+            concursGroupTable.setVisibility(View.GONE);
+            return rootView;
+        }
+        concursGroupTable.setVisibility(View.VISIBLE);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         for (PreStudent preStudent: preStudents) {

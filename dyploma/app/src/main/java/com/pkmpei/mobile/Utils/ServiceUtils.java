@@ -148,6 +148,10 @@ public class ServiceUtils {
         List<PreStudent> allPreStudents = new LinkedList<>();
         try {
             String load_query = new OneListTask(callback).execute(listUri).get();
+            if (FormatUtils.isEmpty(load_query)) {
+                Log.e(TAG, "Ошибка при получении списка, результат пустоой");
+                return allPreStudents;
+            }
             Document doc  = Jsoup.parse(load_query);
             Elements links = doc.select("table[class=\"thin-grid competitive-group-table\"]");
 

@@ -22,7 +22,6 @@ public class NewsDetailsFragment extends Fragment implements SwipeRefreshLayout.
     private static final String TAG = "QueueFragment";
 
     public static final String NEWS_ID_KEY = "NEWS_ID_KEY";
-    private SwipeRefreshLayout swipeRefreshLayout;
     private TextView newsText;
     private TextView newsTitle;
     private TextView newsDate;
@@ -35,8 +34,6 @@ public class NewsDetailsFragment extends Fragment implements SwipeRefreshLayout.
         View rootView = inflater.inflate(R.layout.fragment_news_details, container, false);
 
 
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_news_details);
-        swipeRefreshLayout.setOnRefreshListener(this);
         newsText = (TextView) rootView.findViewById(R.id.news_details_text_view);
         newsDate = (TextView) rootView.findViewById(R.id.news_date);
         newsTitle = (TextView) rootView.findViewById(R.id.news_title);
@@ -61,11 +58,9 @@ public class NewsDetailsFragment extends Fragment implements SwipeRefreshLayout.
      */
     private void refreshOneNews() {
         Log.d(TAG, "Обновление содержимого новости №" + newsId);
-        swipeRefreshLayout.setRefreshing(true);
         News news = ServiceUtils.getNewsDetails(getActivity(), newsId, new Callback<String>() {
             @Override
             public void call(String input) {
-                swipeRefreshLayout.setRefreshing(false);
             }
         });
         if (news != null) {

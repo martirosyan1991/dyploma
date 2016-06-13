@@ -18,6 +18,10 @@ public class FormatUtils {
 
     public static int getLoadFactor(String load) {
         Log.d(TAG, "Обрабатываем загруженность очереди");
+        if (FormatUtils.isEmpty(load) || load.length() < 2) {
+            Log.e(TAG, "Ошибка при обработке загруженности очереди, результат запроса: " + load);
+            return -1;
+        }
         String loadNumber = load.substring(load.length() - 2, load.length()).trim();
         try {
             return Integer.parseInt(loadNumber);
@@ -32,7 +36,15 @@ public class FormatUtils {
         Map<String, Integer> map = new TreeMap<>();
         Pattern p;
         Matcher matcher;
+        if (FormatUtils.isEmpty(input)) {
+            Log.d(TAG, "Запрос на получение электронной очереди ничего не вернул");
+            return map;
+        }
         String[] some = input.split(";");
+        if (some.length <= 0) {
+            Log.d(TAG, "Обработка запроса электронной очереди завершилась неудачно, данных об очереди не найдено! Результат запроса: " + input);
+            return map;
+        }
         p = Pattern.compile("([А-Я]) - (\\d+)");
         for (String s : some) {
             matcher = p.matcher(s);
