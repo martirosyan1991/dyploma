@@ -108,7 +108,7 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (loadNumber != -1) {
             // выводим загруженность очереди в формате человечков
             Log.d(TAG, "Выводим загруженность очереди в формате человечков, показатель равен " + loadNumber);
-            for (int i = 0; i < mapSize; i++) {
+            for (int i = 0; i < loadNumber; i++) {
                 ImageView imageView = new ImageView(new ContextThemeWrapper(getActivity(), R.style.AppTheme_OneColoredMan));
                 int myColor;
                 if (loadNumber <= 5) {
@@ -126,7 +126,7 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 queueLoadList.addView(imageView);
             }
         }
-        for (int i = mapSize; i < 10; i++) {
+        for (int i = loadNumber; i < 10; i++) {
             ImageView imageView = new ImageView(new ContextThemeWrapper(getActivity(), R.style.AppTheme_OneColoredMan));
             int myColor = getResources().getColor(R.color.light_grey_man);
             Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.green_man).mutate();
