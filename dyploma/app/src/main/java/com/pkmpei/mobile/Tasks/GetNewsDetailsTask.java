@@ -6,6 +6,7 @@ import android.util.Log;
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.FormatUtils;
+import com.pkmpei.mobile.Utils.Utils;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -32,7 +33,7 @@ public class GetNewsDetailsTask extends AsyncTask<String, Void, String> {
             String uri  = addQueryParameter(urls[0], "id", Integer.toString(newsId), true);
             String sessionId = UserPreferences.getInstance().getPhpSessId();
             Connection.Response connection;
-            if (FormatUtils.isEmpty(sessionId)) {
+            if (Utils.isEmpty(sessionId)) {
                 Log.d(TAG, "Пользователь не авторизован, ид сессии не передается");
                 connection = Jsoup.connect(uri).execute();
             } else {

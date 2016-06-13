@@ -18,7 +18,7 @@ public class FormatUtils {
 
     public static int getLoadFactor(String load) {
         Log.d(TAG, "Обрабатываем загруженность очереди");
-        if (FormatUtils.isEmpty(load) || load.length() < 2) {
+        if (Utils.isEmpty(load) || load.length() < 2) {
             Log.e(TAG, "Ошибка при обработке загруженности очереди, результат запроса: " + load);
             return -1;
         }
@@ -36,7 +36,7 @@ public class FormatUtils {
         Map<String, Integer> map = new TreeMap<>();
         Pattern p;
         Matcher matcher;
-        if (FormatUtils.isEmpty(input)) {
+        if (Utils.isEmpty(input)) {
             Log.d(TAG, "Запрос на получение электронной очереди ничего не вернул");
             return map;
         }

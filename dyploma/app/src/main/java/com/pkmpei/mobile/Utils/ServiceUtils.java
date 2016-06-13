@@ -101,7 +101,7 @@ public class ServiceUtils {
         try {
             String load_query = new GetNewsDetailsTask(newsId, callback)
                     .execute(context.getResources().getString(R.string.get_news_detail)).get();
-            if (!FormatUtils.isEmpty(load_query) && load_query.startsWith("1###")) {
+            if (!Utils.isEmpty(load_query) && load_query.startsWith("1###")) {
                 Log.d(TAG, "Содержимое новости получено");
                 load_query = load_query.substring("1###".length());
                 String [] newsContent = load_query.split("##");
@@ -148,7 +148,7 @@ public class ServiceUtils {
         List<PreStudent> allPreStudents = new LinkedList<>();
         try {
             String load_query = new OneListTask(callback).execute(listUri).get();
-            if (FormatUtils.isEmpty(load_query)) {
+            if (Utils.isEmpty(load_query)) {
                 Log.e(TAG, "Ошибка при получении списка, результат пустоой");
                 return allPreStudents;
             }
@@ -202,7 +202,7 @@ public class ServiceUtils {
             FIOandBD = new LogonTask(logon_query,
                     UserPreferences.getInstance().getImei(),mobile_pwd, callback).execute().get();
 
-            if (!FormatUtils.isEmpty(FIOandBD) && FIOandBD.startsWith("1")) {
+            if (!Utils.isEmpty(FIOandBD) && FIOandBD.startsWith("1")) {
                 Log.d(TAG, "Авторизация пользователя прошла успешно, ФИО и даты рождения: " + FIOandBD);
                 UserPreferences.getInstance().setFIO(FIOandBD.split(",")[1]);
                 UserPreferences.getInstance().setBirthDate(FIOandBD.split(",")[2]);

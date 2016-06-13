@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.FormatUtils;
+import com.pkmpei.mobile.Utils.Utils;
 
 public class GetGroupsTask extends AsyncTask<String, Void, String> {
 
@@ -25,7 +26,7 @@ public class GetGroupsTask extends AsyncTask<String, Void, String> {
         try {
             Log.d(TAG, "Получение конкурсных групп для авторизованного пользователя");
             String sessionId = UserPreferences.getInstance().getPhpSessId();
-            if (FormatUtils.isEmpty(sessionId)) {
+            if (Utils.isEmpty(sessionId)) {
                 Log.e(TAG, "Ошибка при получении списка конкурсных групп, пользователь не авторизован");
                 return "";
             }

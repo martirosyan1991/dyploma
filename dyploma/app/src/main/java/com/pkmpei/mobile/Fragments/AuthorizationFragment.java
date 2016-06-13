@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.Tasks.RegOrDelMobileTask;
 import com.pkmpei.mobile.UserPreferences;
-import com.pkmpei.mobile.Utils.FormatUtils;
+import com.pkmpei.mobile.Utils.Utils;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 
 public class AuthorizationFragment extends Fragment {
@@ -60,7 +60,7 @@ public class AuthorizationFragment extends Fragment {
                                 new Callback<String>() {
                                     @Override
                                     public void call(String input) {
-                                        if (!FormatUtils.isEmpty(input)) {
+                                        if (!Utils.isEmpty(input)) {
                                             android.app.FragmentManager fragmentManager = getFragmentManager();
                                             fragmentManager.beginTransaction()
                                                     .replace(R.id.frame_container, new SignedInFragment()).commit();

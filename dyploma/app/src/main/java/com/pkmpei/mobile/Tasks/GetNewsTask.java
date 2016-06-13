@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.FormatUtils;
+import com.pkmpei.mobile.Utils.Utils;
 
 public class GetNewsTask extends AsyncTask<String, Void, String> {
 
@@ -26,7 +27,7 @@ public class GetNewsTask extends AsyncTask<String, Void, String> {
             Log.d(TAG, "Получение списка новостей");
             String sessionId = UserPreferences.getInstance().getPhpSessId();
             Connection.Response connection;
-            if (FormatUtils.isEmpty(sessionId)) {
+            if (Utils.isEmpty(sessionId)) {
                 Log.d(TAG, "Пользователь не авторизован, ид сессии не передается");
                 connection = Jsoup.connect(urls[0]).execute();
             } else {

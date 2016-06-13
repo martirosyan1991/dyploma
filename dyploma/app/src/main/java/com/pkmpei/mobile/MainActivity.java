@@ -8,6 +8,7 @@ import com.pkmpei.mobile.Fragments.QueueFragment;
 import com.pkmpei.mobile.Fragments.SignedInFragment;
 import com.pkmpei.mobile.Utils.FormatUtils;
 import com.pkmpei.mobile.Utils.ServiceUtils;
+import com.pkmpei.mobile.Utils.Utils;
 import com.pkmpei.mobile.adapter.NavDrawerListAdapter;
 import com.pkmpei.mobile.model.MenuItem;
 
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         menuItems.add(new MenuItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // Личный кабинет
         String FIO = UserPreferences.getInstance().getFIO();
-        if (!FormatUtils.isEmpty(FIO)) {
+        if (!Utils.isEmpty(FIO)) {
             menuItems.add(new MenuItem(FIO, navMenuIcons.getResourceId(2, -1)));
         } else {
             menuItems.add(new MenuItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));

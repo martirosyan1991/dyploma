@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.Utils.FormatUtils;
+import com.pkmpei.mobile.Utils.Utils;
 
 import static com.pkmpei.mobile.Utils.FormatUtils.addQueryParameter;
 
@@ -43,7 +44,7 @@ public class RegOrDelMobileTask extends AsyncTask<String, Void, String> {
             Document document = connection.parse();
             Log.d(TAG, "Запрос прошел успешно, результат: " + document.text());
             result = document.text();
-            if (!FormatUtils.isEmpty(result) && result.startsWith("1") || callback != null) {
+            if (!Utils.isEmpty(result) && result.startsWith("1") || callback != null) {
                 callback.call(result);
             }
             return result;

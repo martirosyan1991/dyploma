@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.FormatUtils;
+import com.pkmpei.mobile.Utils.Utils;
 
 import static com.pkmpei.mobile.Utils.FormatUtils.addQueryParameter;
 
@@ -39,7 +40,7 @@ public class LogonTask extends AsyncTask<String, Void, String> {
             if (document.text().startsWith("1")) {
                 Log.d(TAG, "Авторизация мобильного устройства прошла успешно");
                 String sessionId = connection.cookie("PHPSESSID");
-                if (!FormatUtils.isEmpty(sessionId)) {
+                if (!Utils.isEmpty(sessionId)) {
                     Log.d(TAG, "Id сессии получен");
                     UserPreferences.getInstance().setPhpSessId(connection.cookie("PHPSESSID"));
                 } else {

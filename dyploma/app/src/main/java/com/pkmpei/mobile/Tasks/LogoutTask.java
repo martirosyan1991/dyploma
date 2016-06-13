@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.FormatUtils;
+import com.pkmpei.mobile.Utils.Utils;
 
 public class LogoutTask extends AsyncTask<String, Void, String> {
 
@@ -25,7 +26,7 @@ public class LogoutTask extends AsyncTask<String, Void, String> {
         try {
             String sessionId = UserPreferences.getInstance().getPhpSessId();
             Log.d(TAG, "Начало выполнения запроса logout с phpsessid = " + sessionId);
-            if (FormatUtils.isEmpty(sessionId)) {
+            if (Utils.isEmpty(sessionId)) {
                 Log.e(TAG, "Ошибка при проверке прав пользователя, пользователь не авторизован");
                 return "";
             }
