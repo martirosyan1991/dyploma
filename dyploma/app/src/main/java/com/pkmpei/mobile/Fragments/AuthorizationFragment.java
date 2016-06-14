@@ -16,6 +16,7 @@ import com.dyploma.garik.dyploma.R;
 import java.util.concurrent.ExecutionException;
 
 import com.pkmpei.mobile.Callback;
+import com.pkmpei.mobile.MainActivity;
 import com.pkmpei.mobile.Tasks.RegOrDelMobileTask;
 import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.Utils;
@@ -39,7 +40,7 @@ public class AuthorizationFragment extends Fragment {
             public void onClick(View v) {
                 String username = ((TextView) rootView.findViewById(R.id.loginEditText)).getText().toString();
                 String password = ((TextView) rootView.findViewById(R.id.password_editText)).getText().toString();
-                String imei  = UserPreferences.getInstance().getImei();
+                String imei = UserPreferences.getInstance().getImei();
                 try {
                     String regMobileResponse = new RegOrDelMobileTask(getActivity().getResources().getString(R.string.reg_mobile),
                             username, password, imei, new Callback<String>() {
@@ -67,8 +68,9 @@ public class AuthorizationFragment extends Fragment {
                                         }
                                     }
                                 });
+                        ((MainActivity) getActivity()).updatePersonalCabinetTitle();
                     } else {
-                        Log.e(TAG, "Регистрация мобильного устройства не завершена, код ошибки: " + regMobileResponse.substring(0,1));
+                        Log.e(TAG, "Регистрация мобильного устройства не завершена, код ошибки: " + regMobileResponse.substring(0, 1));
                     }
                 } catch (InterruptedException | ExecutionException e) {
                     Log.e(TAG, "Регистрация мобильного устройства завершилась ошибкой: " + e.getLocalizedMessage());
@@ -81,19 +83,20 @@ public class AuthorizationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                        // если регистрация устройства прошла успешно, то проходим авторизацию
-                        ServiceUtils.logon(getActivity().getResources().getString(R.string.logon),
-                                sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"),
-                                new Callback<String>() {
-                                    @Override
-                                    public void call(String input) {
-                                            android.app.FragmentManager fragmentManager = getFragmentManager();
-                                            fragmentManager.beginTransaction()
-                                                    .replace(R.id.frame_container, new SignedInFragment()).commit();
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                // если регистрация устройства прошла успешно, то проходим авторизацию
+                ServiceUtils.logon(getActivity().getResources().getString(R.string.logon),
+                        sharedPref.getString(getActivity().getResources().getString(R.string.supersaved_mobile_password), "defaultPwd"),
+                        new Callback<String>() {
+                            @Override
+                            public void call(String input) {
+                                android.app.FragmentManager fragmentManager = getFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.frame_container, new SignedInFragment()).commit();
 
-                                    }
-                                });
+                            }
+                        });
+                ((MainActivity) getActivity()).updatePersonalCabinetTitle();
 
             }
         });
@@ -118,7 +121,7 @@ public class AuthorizationFragment extends Fragment {
             public void onClick(View v) {
                 String username = ((TextView) rootView.findViewById(R.id.loginEditText)).getText().toString();
                 String password = ((TextView) rootView.findViewById(R.id.password_editText)).getText().toString();
-                String imei  = UserPreferences.getInstance().getImei();
+                String imei = UserPreferences.getInstance().getImei();
                 try {
                     new RegOrDelMobileTask(getActivity().getResources().getString(R.string.del_mobile),
                             username, password, imei, new Callback<String>() {

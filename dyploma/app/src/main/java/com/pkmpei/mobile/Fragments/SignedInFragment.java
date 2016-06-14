@@ -14,13 +14,13 @@ import android.widget.TextView;
 import com.dyploma.garik.dyploma.R;
 
 import com.pkmpei.mobile.Callback;
+import com.pkmpei.mobile.MainActivity;
 import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 
 public class SignedInFragment extends Fragment {
 
     private static final String TAG = "AuthorizationFragment";
-    private SwipeRefreshLayout swipeRefreshLayout;
     private TextView fioTextView;
     private TextView birthDateTextView;
 
@@ -32,7 +32,6 @@ public class SignedInFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_signed_in, container, false);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refreshSignedInFragment);
         fioTextView = (TextView) rootView.findViewById(R.id.fioTextView);
         fioTextView.setText(UserPreferences.getInstance().getFIO());
         birthDateTextView = (TextView) rootView.findViewById(R.id.birthDateTextView);
@@ -41,7 +40,6 @@ public class SignedInFragment extends Fragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                swipeRefreshLayout.setRefreshing(true);
                 ServiceUtils.logout(getResources().getString(R.string.logout),
                         new Callback<String>() {
                             @Override
@@ -50,10 +48,13 @@ public class SignedInFragment extends Fragment {
                                 SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.remove("PHPSESSID");
                                 editor.commit();
-                                swipeRefreshLayout.setRefreshing(false);
+                                UserPreferences.getInstance().setFIO("");
+                                UserPreferences.getInstance().setBirthDate("");
+                                UserPreferences.getInstance().setPhpSessId("");
                                 android.app.FragmentManager fragmentManager = getFragmentManager();
                                 fragmentManager.beginTransaction()
                                         .replace(R.id.frame_container, new AuthorizationFragment()).commit();
+                                ((MainActivity) getActivity()).updatePersonalCabinetTitle();
                             }
                         });
             }

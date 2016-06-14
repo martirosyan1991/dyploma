@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import com.pkmpei.mobile.Callback;
+import com.pkmpei.mobile.MainActivity;
 import com.pkmpei.mobile.News;
 import com.pkmpei.mobile.PreStudent;
 import com.pkmpei.mobile.Tasks.CheckAuthTask;

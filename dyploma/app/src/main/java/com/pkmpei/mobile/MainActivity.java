@@ -6,7 +6,6 @@ import com.pkmpei.mobile.Fragments.ConcursGroupFragment;
 import com.pkmpei.mobile.Fragments.NewsFragment;
 import com.pkmpei.mobile.Fragments.QueueFragment;
 import com.pkmpei.mobile.Fragments.SignedInFragment;
-import com.pkmpei.mobile.Utils.FormatUtils;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 import com.pkmpei.mobile.Utils.Utils;
 import com.pkmpei.mobile.adapter.NavDrawerListAdapter;
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
         // пытаемся залогиниться
-        logon();
         setContentView(R.layout.activity_main);
 
         mTitle = mDrawerTitle = getTitle();
@@ -143,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+        logon();
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
@@ -289,8 +289,27 @@ public class MainActivity extends AppCompatActivity {
                 new Callback<String>() {
                     @Override
                     public void call(String input) {
-
                     }
                 });
+        updatePersonalCabinetTitle();
+    }
+
+    public void updatePersonalCabinetTitle() {
+        String FIO = UserPreferences.getInstance().getFIO();
+        MenuItem personalOfficeMenuItem = ((MenuItem) mDrawerList.getAdapter().getItem(2));
+        if (personalOfficeMenuItem != null) {
+            personalOfficeMenuItem.setTitle(!Utils.isEmpty(FIO) ? FIO : navMenuTitles[2]);
+        } else {
+            Log.e(TAG, "Не удалось задать текст пункту меню \"Личный кабинет\"");
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                int position = mDrawerList.getSelectedItemPosition();
+                mDrawerList.setItemChecked(position, true);
+                mDrawerList.setSelection(position);
+            }
+        });
+
     }
 }
