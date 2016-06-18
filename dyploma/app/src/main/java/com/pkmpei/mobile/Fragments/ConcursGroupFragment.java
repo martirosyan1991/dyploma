@@ -38,10 +38,10 @@ public class ConcursGroupFragment extends Fragment {
 
 
 
-        if (preStudents.isEmpty()) {
+        /*if (preStudents.isEmpty()) {
             concursGroupTable.setVisibility(View.GONE);
             return rootView;
-        }
+        }*/
         concursGroupTable.setVisibility(View.VISIBLE);
         concursGroupTable.addView(gridLayout);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,

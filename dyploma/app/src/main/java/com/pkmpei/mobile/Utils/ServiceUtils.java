@@ -255,6 +255,18 @@ public class ServiceUtils {
                 }
                 Log.d(TAG, "Задаем таблице количество колонок: " + colCount);
                 gridLayout.setColumnCount(colCount);
+                for (int i = 2; i < peopleList.size(); i++) {
+                    Elements fields = peopleList.get(i).select("tr").select("td");
+                    for (int j = 0; j < colCount; j++) {
+                        AppCompatTextView preStudentRow = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
+                        GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
+                        layoutParams.setGravity(Gravity.FILL);
+                        layoutParams.columnSpec = GridLayout.spec(j, 1);
+                        layoutParams.rowSpec = GridLayout.spec(i, 1);
+                        preStudentRow.setText(fields.get(j).text());
+                        gridLayout.addView(preStudentRow);
+                    }
+                }
                 /*for (int i = 2; i < peopleList.size(); i++) {
                     try {
                         Elements fields = peopleList.get(i).select("tr").select("td");
