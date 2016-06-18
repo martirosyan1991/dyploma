@@ -1,15 +1,27 @@
 package com.pkmpei.mobile.Utils;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.util.Log;
+import android.util.Pair;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.dyploma.garik.dyploma.R;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.HashMap;
@@ -143,22 +155,107 @@ public class ServiceUtils {
         }
     }
 
-    public static List<PreStudent> getOneList(String listUri, Callback<String> callback) {
+    public static Pair<GridLayout, List<PreStudent>> getOneList(String listUri, Callback<String> callback, Context context) {
         Log.d(TAG, "Получение содержимого списка: " + listUri);
 
         List<PreStudent> allPreStudents = new LinkedList<>();
+        GridLayout gridLayout = new GridLayout(context);
+        gridLayout.setRowCount(2);
+        Pair<GridLayout, List<PreStudent>> result = new Pair<>(gridLayout, allPreStudents);
         try {
             String load_query = new OneListTask(callback).execute(listUri).get();
             if (Utils.isEmpty(load_query)) {
                 Log.e(TAG, "Ошибка при получении списка, результат пустоой");
-                return allPreStudents;
+                return result;
             }
             Document doc  = Jsoup.parse(load_query);
             Elements links = doc.select("table[class=\"thin-grid competitive-group-table\"]");
 
             if (links.size() == 1) {
+                List<String> columnTitles = new LinkedList<>();
                 Elements peopleList = links.get(0).child(0).children();
-                for (int i = 2; i < peopleList.size(); i++) {
+                Elements firstTitleRow = peopleList.get(0).select("[class=parName]");
+                Integer colCount = 0;
+                int specialNumber = 0;
+                int extraColumnCount = 0;
+                for (Element e: firstTitleRow) {
+                    boolean oneColSpan = true;
+                    AppCompatTextView columnTitle = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
+                    columnTitle.setGravity(Gravity.CENTER);
+                    String rowSpan = e.attr("rowspan");
+                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
+                    layoutParams.setGravity(Gravity.FILL);
+                    if (Utils.isEmpty(rowSpan)) {
+                        layoutParams.rowSpec = GridLayout.spec(0, 1);
+                        String colSpan = e.attr("colspan");
+                        try {
+                            int colSpanParam = Integer.parseInt(colSpan);
+                            layoutParams.columnSpec = GridLayout.spec(colCount, colSpanParam);
+                            extraColumnCount = colSpanParam;
+                            specialNumber = colCount;
+                            colCount += colSpanParam - 1;
+                            if (colSpanParam > 1) {
+                                oneColSpan = false;
+                            }
+                        } catch (NumberFormatException ne) {
+                            layoutParams.columnSpec = GridLayout.spec(colCount, 1);
+                        }
+                    } else {
+                        try {
+                            layoutParams.rowSpec = GridLayout.spec(0, Integer.parseInt(rowSpan));
+                        } catch (NumberFormatException ne) {
+                            layoutParams.rowSpec = GridLayout.spec(0, 2);
+                        }
+                        layoutParams.columnSpec = GridLayout.spec(colCount, 1);
+                    }
+                    if (extraColumnCount == 0) {
+                        columnTitles.add(colCount, e.text());
+                    } else  if (oneColSpan){
+                        columnTitles.add(colCount - extraColumnCount, e.text());
+                    }
+                    colCount++;
+                    columnTitle.setText(e.text());
+                    columnTitle.setLayoutParams(layoutParams);
+                    gridLayout.addView(columnTitle);
+                }
+                Elements secondTitleRow = peopleList.get(1).select("[class=parName]");
+                for (Element e: secondTitleRow) {
+                    AppCompatTextView columnTitle = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
+                    columnTitle.setGravity(Gravity.CENTER);
+                    LinearLayout.LayoutParams linerLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    linerLayoutParams.gravity = Gravity.FILL;
+                    String rowSpan = e.attr("rowspan");
+                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
+                    layoutParams.setGravity(Gravity.FILL);
+                    if (Utils.isEmpty(rowSpan)) {
+                        layoutParams.rowSpec = GridLayout.spec(1, 1);
+                        String colSpan = e.attr("colspan");
+                        try {
+                            layoutParams.columnSpec = GridLayout.spec(specialNumber, Integer.parseInt(Utils.isEmpty(colSpan) ? "1" : colSpan));
+                        } catch (NumberFormatException ne) {
+                            layoutParams.columnSpec = GridLayout.spec(specialNumber, 1);
+                        }
+                    } else {
+                        try {
+                            layoutParams.rowSpec = GridLayout.spec(1, 1);
+                        } catch (NumberFormatException ne) {
+                            layoutParams.rowSpec = GridLayout.spec(1, 1);
+                        }
+                        layoutParams.columnSpec = GridLayout.spec(specialNumber, 1);
+                    }
+                    columnTitles.add(specialNumber, e.text());
+                    specialNumber++;
+                    columnTitle.setText(e.text());
+                    /*columnTitle.setTextAppearance(context, R.style.AppTheme_TableColumnHeader);
+                    columnTitle.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));*/
+                    columnTitle.setLayoutParams(layoutParams);
+                    //columnTitle.setLayoutParams(linerLayoutParams);
+                    columnTitle.setGravity(Gravity.CENTER);
+                    gridLayout.addView(columnTitle);
+                }
+                Log.d(TAG, "Задаем таблице количество колонок: " + colCount);
+                gridLayout.setColumnCount(colCount);
+                /*for (int i = 2; i < peopleList.size(); i++) {
                     try {
                         Elements fields = peopleList.get(i).select("tr").select("td");
                         PreStudent preStudent = new PreStudent();
@@ -181,7 +278,7 @@ public class ServiceUtils {
                         Log.e(TAG, "Ошибка при парсинге данных абитуриента из списка: " + peopleList.get(i) +
                         "\nСообщение об ошибке: "+ e.getLocalizedMessage());
                     }
-                }
+                }*/
             } else {
                 Log.e(TAG, "Что-то не так со списком, количество подходящих таблиц : " + links.size());
             }
@@ -193,7 +290,7 @@ public class ServiceUtils {
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении содержимого списка студентов: " + e.getLocalizedMessage());
         }
-        return allPreStudents;
+        return result;
     }
 
 
@@ -213,17 +310,16 @@ public class ServiceUtils {
                 UserPreferences.getInstance().setBirthDate("");
             }
         } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Ошибка при авторизации: " + FIOandBD);
+            Log.e(TAG, "Ошибка при авторизации: ", e);
         }
     }
 
     public static void checkAuth(String checkQuery, Callback<Boolean> callback) {
-        String result = null;
         try {
-            result = new CheckAuthTask(callback).execute(checkQuery).get();
+            String result = new CheckAuthTask(callback).execute(checkQuery).get();
             Log.d(TAG, "Запрос проверки авторизации прошел успешно: " + result);
         } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Ошибка при проверке авторизации: " + result + "{" + e.getLocalizedMessage() + "}");
+            Log.e(TAG, "Ошибка при проверке авторизации:", e);
         }
     }
 
@@ -235,4 +331,5 @@ public class ServiceUtils {
             Log.e(TAG, "Ошибка при проверке авторизации: " + result + "{" + e.getLocalizedMessage() + "}");
         }
     }
+
 }

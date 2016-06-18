@@ -3,10 +3,12 @@ package com.pkmpei.mobile.Fragments;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,8 +31,11 @@ public class ConcursGroupFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_concurs_group, container, false);
 
-        List<PreStudent> preStudents = ServiceUtils.getOneList("http://www.pkmpei.ru/inform/list14f.html", null);
-        GridLayout concursGroupTable = (GridLayout) rootView.findViewById(R.id.concurs_group_table);
+        Pair<GridLayout, List<PreStudent>> result = ServiceUtils.getOneList("http://www.pkmpei.ru//inform/entrants_list6.html", null, getActivity());
+        List<PreStudent> preStudents = result.second;
+        GridLayout gridLayout = result.first;
+        HorizontalScrollView concursGroupTable = (HorizontalScrollView) rootView.findViewById(R.id.concurs_group_table);
+
 
 
         if (preStudents.isEmpty()) {
@@ -38,9 +43,10 @@ public class ConcursGroupFragment extends Fragment {
             return rootView;
         }
         concursGroupTable.setVisibility(View.VISIBLE);
+        concursGroupTable.addView(gridLayout);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        for (PreStudent preStudent: preStudents) {
+        /*for (PreStudent preStudent: preStudents) {
             TextView sumTextView = new TextView(getActivity(), null);
             TextView mathTextView = new TextView(getActivity(), null);
             TextView russianTextView = new TextView(getActivity(), null);
@@ -84,10 +90,7 @@ public class ConcursGroupFragment extends Fragment {
             concursGroupTable.addView(commonTextView);
             concursGroupTable.addView(docStateTextView);
             concursGroupTable.addView(commentsTextView);
-        }
-
-
-
+        }*/
         return rootView;
     }
 }

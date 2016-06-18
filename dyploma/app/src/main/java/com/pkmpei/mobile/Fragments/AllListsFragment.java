@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,7 +26,6 @@ import com.pkmpei.mobile.Utils.ServiceUtils;
 public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     ListView groupList;
-    SwipeRefreshLayout mSwipeRefreshLayout;
     Map<String, String> groupLinks = new TreeMap<>();
     public AllListsFragment(){}
 
@@ -39,58 +39,58 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
         groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                List<PreStudent> allPreStudents = ServiceUtils.getOneList(((TextView) view).getText().toString(),
+                android.util.Pair<GridLayout, List<PreStudent>> result = ServiceUtils.getOneList(((TextView) view).getText().toString(),
                         new Callback<String>() {
                             @Override
                             public void call(String input) {
 
                             }
-                        });
+                        }, getActivity());
+                List<PreStudent> allPreStudents = result.second;
+                GridLayout titleGridLayout = result.first;
+
+                titleGridLayout.setVisibility(View.GONE);
+
             }
         });
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refreshGroupList);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-
         refreshData();
-
 
         return rootView;
     }
 
-    @Override
-    public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
             @Override
-            public void run() {
-                refreshData();
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshData();
+                    }
+                }, 1000);
             }
-        }, 1000);
-    }
 
-    private void refreshData() {
-        mSwipeRefreshLayout.setRefreshing(true);
-        Map<String, String> listLinks = ServiceUtils.getListsForCurrentUser(getActivity(), new Callback<String>() {
-            @Override
-            public void call(String input) {
-                mSwipeRefreshLayout.setRefreshing(false);
+            private void refreshData() {
+                Map<String, String> listLinks = ServiceUtils.getListsForCurrentUser(getActivity(), new Callback<String>() {
+                    @Override
+                    public void call(String input) {
+                    }
+                });
+                int mapSize = listLinks.values().size();
+                String[] queueLines = listLinks.keySet().toArray(new String[mapSize]);
+                String[] queueTitles = new String[mapSize];
+                for (int i = 0; i < mapSize; i++) {
+                    queueTitles[i] = queueLines[i];
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_link, queueTitles);
+                groupList.setAdapter(adapter);
+                groupLinks.clear();
+                groupLinks.putAll(listLinks);
+
+                ServiceUtils.getConcursGroup(getActivity(), new Callback<String>() {
+                    @Override
+                    public void call(String input) {
+
+                    }
+                });
+
             }
-        });
-        int mapSize = listLinks.values().size();
-        String [] queueLines = listLinks.keySet().toArray(new String[mapSize]);
-        String [] queueTitles = new String[mapSize];
-        for (int i = 0; i < mapSize; i++) {
-            queueTitles[i] = queueLines[i];
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_link, queueTitles);
-        groupList.setAdapter(adapter);
-        groupLinks.clear();
-        groupLinks.putAll(listLinks);
-
-        ServiceUtils.getConcursGroup(getActivity(), new Callback<String>() {
-            @Override
-            public void call(String input) {
-
-            }
-        });
-    }
 }
