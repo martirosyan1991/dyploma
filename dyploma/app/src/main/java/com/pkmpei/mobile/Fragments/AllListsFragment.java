@@ -9,18 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.dyploma.garik.dyploma.R;
 
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.pkmpei.mobile.Callback;
-import com.pkmpei.mobile.PreStudent;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 
 public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -36,23 +32,19 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
         final View rootView = inflater.inflate(R.layout.all_lists, container, false);
 
         groupList = (ListView) rootView.findViewById(R.id.group_list);
-        groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                android.util.Pair<GridLayout, List<PreStudent>> result = ServiceUtils.getOneList(((TextView) view).getText().toString(),
-                        new Callback<String>() {
-                            @Override
-                            public void call(String input) {
+                Map<String, String> entrantsLists = ServiceUtils.getEntrantsLists(getActivity(), new Callback<String>() {
+                    @Override
+                    public void call(String input) {
 
-                            }
-                        }, getActivity());
-                List<PreStudent> allPreStudents = result.second;
-                GridLayout titleGridLayout = result.first;
-
-                titleGridLayout.setVisibility(View.GONE);
+                    }
+                });
+                entrantsLists.clear();
 
             }
-        });
+        });*/
         refreshData();
 
         return rootView;
@@ -69,7 +61,7 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
             private void refreshData() {
-                Map<String, String> listLinks = ServiceUtils.getListsForCurrentUser(getActivity(), new Callback<String>() {
+                Map<String, String> listLinks = ServiceUtils.getEntrantsLists(getActivity(), new Callback<String>() {
                     @Override
                     public void call(String input) {
                     }

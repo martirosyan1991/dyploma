@@ -55,7 +55,7 @@ public class ServiceUtils {
     public static Map<String, Integer> getQueueNumbers(Context context, Callback<String> callback) {
         String number_query = null;
         try {
-            number_query = new LoadTask(callback).execute(context.getResources().getString(R.string.number_query)).get();
+            number_query = new LoadTask(callback, 1).execute(context.getResources().getString(R.string.number_query)).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -65,7 +65,7 @@ public class ServiceUtils {
     public static int getQueueLoad(Context context, Callback<String> callback) {
         String load_query = null;
         try {
-            load_query = new LoadTask(callback).execute(context.getResources().getString(R.string.load_query)).get();
+            load_query = new LoadTask(callback, 1).execute(context.getResources().getString(R.string.load_query)).get();
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при обработке запроса загруженности очереди", e);
         }
@@ -78,13 +78,13 @@ public class ServiceUtils {
         Map<String, String> fullList = new HashMap<>();
         try {
             String baseUri = context.getResources().getString(R.string.list_base_uri);
-            String load_query = new LoadTask(callback).execute(context.getResources().getString(R.string.lists_and_orders)).get();
+            String load_query = new LoadTask(callback, 0).execute(context.getResources().getString(R.string.lists_and_orders)).get();
             Document doc  = Jsoup.parse(load_query);
             Elements links = doc.select("a[href~=list[a-z]?[0-9]*[a-z].html]");
 
 
             for (int i = 0; i < links.size(); i++) {
-                Document tempDoc = Jsoup.parse(new LoadTask(callback).execute(baseUri + links.get(i).attr("href")).get());
+                Document tempDoc = Jsoup.parse(new LoadTask(callback, 0).execute(baseUri + links.get(i).attr("href")).get());
                 Elements internalLinks = tempDoc.select("a[href~=list[a-z]?[0-9]*[a-z].html]");
                 for (int j = 0; j < internalLinks.size(); j++) {
                     fullList.put(baseUri + internalLinks.get(j).attr("href"), internalLinks.get(j).text());
@@ -92,6 +92,26 @@ public class ServiceUtils {
             }
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении конкурсных списков: " + e.getLocalizedMessage());
+        }
+        return fullList;
+    }
+
+    public static Map<String, String> getEntrantsLists(Context context, Callback<String> callback) {
+
+        Log.d(TAG, "Получение списков, подавших документы");
+        Map<String, String> fullList = new HashMap<>();
+        try {
+            String load_query = new LoadTask(callback, 0).execute(context.getResources().getString(R.string.entrants_lists)).get();
+            Document doc  = Jsoup.parse(load_query);
+            Elements links = doc.select("a[href~=entrants_list[a-z]?[0-9]*[a-z]?.html]");
+
+
+            Log.d(TAG, "Найдено " + links.size() + " списков на стартовой странице");
+            for (int i = 0; i < links.size(); i++) {
+                fullList.put(links.get(i).parent().parent().getAllElements().get(1).text(), links.get(i).text());
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Ошибка при получении списков, подавших документы", e);
         }
         return fullList;
     }

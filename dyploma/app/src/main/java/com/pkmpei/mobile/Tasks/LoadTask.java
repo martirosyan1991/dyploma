@@ -14,8 +14,11 @@ public class LoadTask extends AsyncTask<String, Void, String> {
     private final Callback<String> callback;
     private static final String TAG = "LoadTask";
 
-    public LoadTask(Callback<String> callback) {
+    private int mode;
+
+    public LoadTask(Callback<String> callback, int mode) {
         this.callback = callback;
+        this.mode = mode;
     }
 
     protected String doInBackground(String... urls) {
@@ -24,7 +27,11 @@ public class LoadTask extends AsyncTask<String, Void, String> {
             Log.d(TAG, "Начало выполнения запроса: " + urls[0]);
             Connection.Response connection = Jsoup.connect(urls[0]).execute();
             Document document = connection.parse();
-            result = document.text();
+            if (mode == 0) {
+                result = document.toString();
+            } else {
+                result = document.text();
+            }
             Log.d(TAG, "Запрос прошел успешно, результат: " + result);
             if (callback != null) {
                 callback.call(result);

@@ -5,6 +5,7 @@
     <string name="load_query">http://www.pkmpei.ru/mobile/get_queue.php?mode=1</string>
     <string name="number_query">http://www.pkmpei.ru/mobile/get_queue.php?mode=2</string>
     <string name="lists_and_orders">http://www.pkmpei.ru/inform/lists_and_orders</string>
+    <string name="entrants_lists">http://www.pkmpei.ru/inform/entrants_list.html</string>
     <string name="list_base_uri">http://www.pkmpei.ru</string>
     <string name="reg_mobile">http://www.pkmpei.ru/mobile/reg_mobile.php</string>
     <string name="del_mobile">http://www.pkmpei.ru/mobile/del_mobile.php</string>
