@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.pkmpei.mobile.Callback;
+import com.pkmpei.mobile.ConcursGroup;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 
 import org.jsoup.nodes.Element;
@@ -69,11 +70,29 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
             private void refreshData() {
+
+                List<ConcursGroup> userGroups = ServiceUtils.getListsForCurrentUser(getActivity(), new Callback<String>() {
+                    @Override
+                    public void call(String input) {
+
+                    }
+                });
+
+                List<String> linksFilter = new LinkedList<>();
+                for (ConcursGroup group: userGroups) {
+                    String link = "entrants_list";
+                    if (group.isNeedDomitory()) {
+                        link += "h";
+                    }
+                    link += group.getId() + ".html";
+                    linksFilter.add(link);
+                }
+
                 List<Pair<String, Map<String, List<Element>>>> tempListLinks = ServiceUtils.getEntrantsLists(getActivity(), new Callback<String>() {
                     @Override
                     public void call(String input) {
                     }
-                });
+                }, linksFilter);
                 if (tempListLinks.size() == 0) {
                     return;
                 }
@@ -94,13 +113,5 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_link, queueTitles);
                 groupList.setAdapter(adapter);
-
-                ServiceUtils.getConcursGroup(getActivity(), new Callback<String>() {
-                    @Override
-                    public void call(String input) {
-
-                    }
-                });
-
             }
 }

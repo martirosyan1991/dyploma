@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import com.pkmpei.mobile.Callback;
+import com.pkmpei.mobile.ConcursGroup;
 import com.pkmpei.mobile.MainActivity;
 import com.pkmpei.mobile.News;
 import com.pkmpei.mobile.PreStudent;
@@ -98,7 +99,7 @@ public class ServiceUtils {
         return fullList;
     }
 
-    public static List<Pair<String,Map<String, List<Element>>>> getEntrantsLists(Context context, Callback<String> callback) {
+    public static List<Pair<String,Map<String, List<Element>>>> getEntrantsLists(Context context, Callback<String> callback, List<String> filter) {
 
         Log.d(TAG, "Получение списков, подавших документы");
         List<Pair<String, Map<String, List<Element>>>> fullList = new LinkedList<>();
@@ -118,17 +119,22 @@ public class ServiceUtils {
                     Element currentTable = allElements.get(indexOfTitle + (j++));
                     if ("table".equalsIgnoreCase(currentTable.tag().toString())) {
                         Map<String, List<Element>> tableMap = new HashMap<>();
-                        Elements links2 = currentTable.getAllElements().select("a[href~=entrants_list[a-z]?[0-9]*[a-z]?.html]");
-                        for (int k = 0; k < links2.size(); k++) {
-                            String groupTitle = links2.get(k).parent().parent().getAllElements().get(1).text();
+                        Elements links = currentTable.getAllElements().select("a[href~=entrants_list[a-z]?[0-9]*[a-z]?.html]");
+                        for (int k = 0; k < links.size(); k++) {
+                            Element currentList = links.get(k);
+                            String link = currentList.attr("href");
+                            if (!filter.contains(link)) {
+                                continue;
+                            }
+                            String groupTitle = currentList.parent().parent().getAllElements().get(1).text();
                             if (tableMap.get(groupTitle) != null) {
                                 List<Element> groupLinks = new LinkedList<>(tableMap.get(groupTitle));
-                                groupLinks.add(links2.get(k));
+                                groupLinks.add(currentList);
                                 tableMap.remove(groupTitle);
                                 tableMap.put(groupTitle, groupLinks);
                             } else {
                                 tableMap.put(groupTitle,
-                                        Collections.singletonList(links2.get(k)));
+                                        Collections.singletonList(links.get(k)));
                             }
                         }
                         fullList.add(new Pair<>(tableTitles.get(i).text(), tableMap));
@@ -178,13 +184,28 @@ public class ServiceUtils {
         return null;
     }
 
-    public static Map<String, String> getListsForCurrentUser(Context context, Callback<String> callback) {
+    public static List<ConcursGroup> getListsForCurrentUser(Context context, Callback<String> callback) {
 
         // TODO добавить обработку списка групп
         Log.d(TAG, "Получение конкурсных списков для текущего пользователя");
-        Map<String, String> fullList = new HashMap<>();
+        List<ConcursGroup> fullList = new LinkedList<>();
         try {
             String load_query = new GetGroupsTask(callback).execute(context.getResources().getString(R.string.get_groups)).get();
+            if (Utils.isEmpty(load_query) || !load_query.startsWith("1")) {
+                return fullList;
+            }
+            String[] groups = load_query.split("###");
+            for (int i = 1; i < groups.length; i++) {
+                String[] grouProperties = groups[i].split(";");
+                if (grouProperties.length != 3) {
+                    continue;
+                }
+                ConcursGroup group = new ConcursGroup();
+                group.setId(Integer.parseInt(grouProperties[0]));
+                group.setName(grouProperties[1]);
+                group.setNeedDomitory("1".equals(grouProperties[2]));
+                fullList.add(group);
+            }
             System.out.println("yyy loadQuery for groups = " + load_query);
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении конкурсных списков: " + e.getLocalizedMessage());
