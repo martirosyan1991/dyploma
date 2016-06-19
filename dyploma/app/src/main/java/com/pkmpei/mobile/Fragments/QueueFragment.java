@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.dyploma.garik.dyploma.R;
 
@@ -91,7 +92,6 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             queueList.setAdapter(adapter);
         }
 
-
         mSwipeRefreshLayout.setRefreshing(true);
         int loadNumber = ServiceUtils.getQueueLoad(getActivity(), new Callback<String>() {
             @Override
@@ -125,6 +125,9 @@ public class QueueFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 imageView.setLayoutParams(new DrawerLayout.LayoutParams(FormatUtils.convertDpToPixels(getActivity(), 25), FormatUtils.convertDpToPixels(getActivity(), 45)));
                 queueLoadList.addView(imageView);
             }
+        } else {
+            Toast.makeText(getActivity(), "Ошибка при получении загружежнности очереди", Toast.LENGTH_SHORT).show();
+            loadNumber = 0;
         }
         for (int i = loadNumber; i < 10; i++) {
             ImageView imageView = new ImageView(new ContextThemeWrapper(getActivity(), R.style.AppTheme_OneColoredMan));

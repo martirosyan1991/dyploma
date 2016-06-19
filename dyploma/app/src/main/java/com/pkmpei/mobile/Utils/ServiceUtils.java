@@ -105,6 +105,9 @@ public class ServiceUtils {
         List<Pair<String, Map<String, List<Element>>>> fullList = new LinkedList<>();
         try {
             String load_query = new LoadTask(callback, 0).execute(context.getResources().getString(R.string.entrants_lists)).get();
+            if (Utils.isEmpty(load_query)) {
+                return fullList;
+            }
             Document doc  = Jsoup.parse(load_query);
 
             Elements allElements = doc.getAllElements();

@@ -44,4 +44,6 @@
     <string name="desc_list_item_icon">Item Icon</string>
 
     <string name="allLists"><a href="http://www.pkmpei.ru/inform/entrants_list.html">Все списки поступающих</a></string>
+    <string name="login_text">Войти</string>
+    <string name="logout_text">Выйти из кабинета</string>
 </resources>

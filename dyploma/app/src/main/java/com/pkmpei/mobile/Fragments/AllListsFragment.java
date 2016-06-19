@@ -23,7 +23,9 @@ import java.util.Map;
 
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.ConcursGroup;
+import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.ServiceUtils;
+import com.pkmpei.mobile.Utils.Utils;
 
 import org.jsoup.nodes.Element;
 
@@ -80,7 +82,10 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void refreshData() {
-
+        if (Utils.isEmpty(UserPreferences.getInstance().getFIO())) {
+            Toast.makeText(getActivity(), "Пользовател не авторизован, список групп не может быть получен", Toast.LENGTH_LONG).show();
+            return;
+        }
         List<ConcursGroup> userGroups = ServiceUtils.getListsForCurrentUser(getActivity(), new Callback<String>() {
             @Override
             public void call(String input) {
@@ -104,6 +109,7 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         }, linksFilter);
         if (tempListLinks.size() == 0) {
+            Toast.makeText(getActivity(), "Список групп абитуриента - пуст", Toast.LENGTH_SHORT).show();
             return;
         }
         hrefs.clear();

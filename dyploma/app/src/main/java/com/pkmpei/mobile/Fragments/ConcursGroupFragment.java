@@ -11,6 +11,7 @@ import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dyploma.garik.dyploma.R;
 import com.pkmpei.mobile.Callback;
@@ -22,7 +23,6 @@ import java.util.List;
 public class ConcursGroupFragment extends Fragment {
 
     private static final String TAG = "QueueFragment";
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static final String GROUP_URI = "GROUP_URI";
     public ConcursGroupFragment(){}
@@ -40,59 +40,13 @@ public class ConcursGroupFragment extends Fragment {
 
 
 
-        /*if (preStudents.isEmpty()) {
+        if (preStudents.isEmpty()) {
             concursGroupTable.setVisibility(View.GONE);
+            Toast.makeText(getActivity(), "Список поступающих пуст", Toast.LENGTH_SHORT).show();
             return rootView;
-        }*/
+        }
         concursGroupTable.setVisibility(View.VISIBLE);
         concursGroupTable.addView(gridLayout);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        /*for (PreStudent preStudent: preStudents) {
-            TextView sumTextView = new TextView(getActivity(), null);
-            TextView mathTextView = new TextView(getActivity(), null);
-            TextView russianTextView = new TextView(getActivity(), null);
-            TextView physicTextView = new TextView(getActivity(), null);
-            TextView idTextView = new TextView(getActivity(), null);
-            TextView fioTextView = new TextView(getActivity(), null);
-            TextView birthDateTextView = new TextView(getActivity(), null);
-            TextView commonTextView = new TextView(getActivity(), null);
-            TextView docStateTextView = new TextView(getActivity(), null);
-            TextView commentsTextView = new TextView(getActivity(), null);
-
-            sumTextView.setLayoutParams(layoutParams);
-            mathTextView.setLayoutParams(layoutParams);
-            russianTextView.setLayoutParams(layoutParams);
-            physicTextView.setLayoutParams(layoutParams);
-            idTextView.setLayoutParams(layoutParams);
-            fioTextView.setLayoutParams(layoutParams);
-            birthDateTextView.setLayoutParams(layoutParams);
-            commonTextView.setLayoutParams(layoutParams);
-            docStateTextView.setLayoutParams(layoutParams);
-            commentsTextView.setLayoutParams(layoutParams);
-
-            sumTextView.setText(Integer.toString(preStudent.getSum()));
-            mathTextView.setText(Integer.toString(preStudent.getMath()));
-            russianTextView.setText(Integer.toString(preStudent.getRussian()));
-            physicTextView.setText(Integer.toString(preStudent.getPhysic()));
-            idTextView.setText(preStudent.getId());
-            fioTextView.setText(preStudent.getFio());
-            birthDateTextView.setText(preStudent.getBirthDate());
-            commonTextView.setText(preStudent.getCommon());
-            docStateTextView.setText(preStudent.getDocumentStatus());
-            commentsTextView.setText(preStudent.getComments());
-
-            concursGroupTable.addView(sumTextView);
-            concursGroupTable.addView(mathTextView);
-            concursGroupTable.addView(physicTextView);
-            concursGroupTable.addView(russianTextView);
-            concursGroupTable.addView(idTextView);
-            concursGroupTable.addView(fioTextView);
-            concursGroupTable.addView(birthDateTextView);
-            concursGroupTable.addView(commonTextView);
-            concursGroupTable.addView(docStateTextView);
-            concursGroupTable.addView(commentsTextView);
-        }*/
         return rootView;
     }
 }

@@ -44,7 +44,6 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(), "we got news with id = " + newsIds.get(position), Toast.LENGTH_SHORT).show();
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 Bundle arguments = new Bundle();
                 arguments.putInt(NewsDetailsFragment.NEWS_ID_KEY, newsIds.get(position));
@@ -83,6 +82,10 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
         int listSize = newsList.size();
+        if (listSize == 0) {
+            Toast.makeText(getActivity(), "Список новостей пуст", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String [] queueTitles = new String[listSize];
         newsIds.clear();
         for (int i = 0; i < listSize; i++) {
