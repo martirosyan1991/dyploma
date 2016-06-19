@@ -24,6 +24,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -96,19 +98,43 @@ public class ServiceUtils {
         return fullList;
     }
 
-    public static Map<String, String> getEntrantsLists(Context context, Callback<String> callback) {
+    public static List<Pair<String,Map<String, List<Element>>>> getEntrantsLists(Context context, Callback<String> callback) {
 
         Log.d(TAG, "Получение списков, подавших документы");
-        Map<String, String> fullList = new HashMap<>();
+        List<Pair<String, Map<String, List<Element>>>> fullList = new LinkedList<>();
         try {
             String load_query = new LoadTask(callback, 0).execute(context.getResources().getString(R.string.entrants_lists)).get();
             Document doc  = Jsoup.parse(load_query);
-            Elements links = doc.select("a[href~=entrants_list[a-z]?[0-9]*[a-z]?.html]");
 
-
-            Log.d(TAG, "Найдено " + links.size() + " списков на стартовой странице");
-            for (int i = 0; i < links.size(); i++) {
-                fullList.put(links.get(i).parent().parent().getAllElements().get(1).text(), links.get(i).text());
+            Elements allElements = doc.getAllElements();
+            Elements tableTitles = doc.select("[class=title2]");
+            for (int i = 0; i < tableTitles.size(); i++) {
+                int indexOfTitle = allElements.indexOf(tableTitles.get(i));
+                if (indexOfTitle == -1) {
+                    continue;
+                }
+                int j = 1;
+                while (j < 5) {
+                    Element currentTable = allElements.get(indexOfTitle + (j++));
+                    if ("table".equalsIgnoreCase(currentTable.tag().toString())) {
+                        Map<String, List<Element>> tableMap = new HashMap<>();
+                        Elements links2 = currentTable.getAllElements().select("a[href~=entrants_list[a-z]?[0-9]*[a-z]?.html]");
+                        for (int k = 0; k < links2.size(); k++) {
+                            String groupTitle = links2.get(k).parent().parent().getAllElements().get(1).text();
+                            if (tableMap.get(groupTitle) != null) {
+                                List<Element> groupLinks = new LinkedList<>(tableMap.get(groupTitle));
+                                groupLinks.add(links2.get(k));
+                                tableMap.remove(groupTitle);
+                                tableMap.put(groupTitle, groupLinks);
+                            } else {
+                                tableMap.put(groupTitle,
+                                        Collections.singletonList(links2.get(k)));
+                            }
+                        }
+                        fullList.add(new Pair<>(tableTitles.get(i).text(), tableMap));
+                        j = 6;
+                    }
+                }
             }
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении списков, подавших документы", e);
