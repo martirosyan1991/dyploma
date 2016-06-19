@@ -42,4 +42,6 @@
         <string name="pwd">fRYgxO1v</string>
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>
+
+    <string name="allLists"><a href="http://www.pkmpei.ru/inform/entrants_list.html">Все списки поступающих</a></string>
 </resources>

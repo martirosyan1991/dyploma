@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.method.LinkMovementMethod;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dyploma.garik.dyploma.R;
@@ -30,7 +32,9 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
     ListView groupList;
     List<String> hrefs = new LinkedList<>();
     List<Pair<String, Map<String, List<Element>>>> listLinks;
-    public AllListsFragment(){}
+
+    public AllListsFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,64 +58,70 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
             }
         });
-        refreshData();
 
+        ((TextView) rootView.findViewById(R.id.all_lists_link)).setMovementMethod((LinkMovementMethod.getInstance()));
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        refreshData();
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshData();
-                    }
-                }, 1000);
+            public void run() {
+                refreshData();
             }
+        }, 1000);
+    }
 
-            private void refreshData() {
+    private void refreshData() {
 
-                List<ConcursGroup> userGroups = ServiceUtils.getListsForCurrentUser(getActivity(), new Callback<String>() {
-                    @Override
-                    public void call(String input) {
+        List<ConcursGroup> userGroups = ServiceUtils.getListsForCurrentUser(getActivity(), new Callback<String>() {
+            @Override
+            public void call(String input) {
 
-                    }
-                });
-
-                List<String> linksFilter = new LinkedList<>();
-                for (ConcursGroup group: userGroups) {
-                    String link = "entrants_list";
-                    if (group.isNeedDomitory()) {
-                        link += "h";
-                    }
-                    link += group.getId() + ".html";
-                    linksFilter.add(link);
-                }
-
-                List<Pair<String, Map<String, List<Element>>>> tempListLinks = ServiceUtils.getEntrantsLists(getActivity(), new Callback<String>() {
-                    @Override
-                    public void call(String input) {
-                    }
-                }, linksFilter);
-                if (tempListLinks.size() == 0) {
-                    return;
-                }
-                hrefs.clear();
-                int hrefsCount = 0;
-                listLinks = tempListLinks;
-                groupList.setAdapter(null);
-                List<String> queueTitles = new LinkedList<>();
-                for (Pair<String, Map<String, List<Element>>> p: listLinks) {
-                    Map<String, List<Element>> mapaaa = p.second;
-                    for (String key: mapaaa.keySet()) {
-                        List<Element> list = mapaaa.get(key);
-                        for (Element e : list) {
-                            queueTitles.add(p.first + "(" + key + ")" + e.text());
-                            hrefs.add(hrefsCount++, e.attr("href"));
-                        }
-                    }
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_link, queueTitles);
-                groupList.setAdapter(adapter);
             }
+        });
+
+        List<String> linksFilter = new LinkedList<>();
+        for (ConcursGroup group : userGroups) {
+            String link = "entrants_list";
+            if (group.isNeedDomitory()) {
+                link += "h";
+            }
+            link += group.getId() + ".html";
+            linksFilter.add(link);
+        }
+
+        List<Pair<String, Map<String, List<Element>>>> tempListLinks = ServiceUtils.getEntrantsLists(getActivity(), new Callback<String>() {
+            @Override
+            public void call(String input) {
+            }
+        }, linksFilter);
+        if (tempListLinks.size() == 0) {
+            return;
+        }
+        hrefs.clear();
+        int hrefsCount = 0;
+        listLinks = tempListLinks;
+        groupList.setAdapter(null);
+        List<String> queueTitles = new LinkedList<>();
+        for (Pair<String, Map<String, List<Element>>> p : listLinks) {
+            Map<String, List<Element>> mapaaa = p.second;
+            for (String key : mapaaa.keySet()) {
+                List<Element> list = mapaaa.get(key);
+                for (Element e : list) {
+                    queueTitles.add(p.first + "(" + key + ")" + e.text());
+                    hrefs.add(hrefsCount++, e.attr("href"));
+                }
+            }
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_link, queueTitles);
+        groupList.setAdapter(adapter);
+    }
 }
