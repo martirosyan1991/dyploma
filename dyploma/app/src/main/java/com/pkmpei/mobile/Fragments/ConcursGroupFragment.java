@@ -23,6 +23,8 @@ public class ConcursGroupFragment extends Fragment {
 
     private static final String TAG = "QueueFragment";
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    public static final String GROUP_URI = "GROUP_URI";
     public ConcursGroupFragment(){}
 
     @Override
@@ -31,7 +33,7 @@ public class ConcursGroupFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_concurs_group, container, false);
 
-        Pair<GridLayout, List<PreStudent>> result = ServiceUtils.getOneList("http://www.pkmpei.ru//inform/entrants_list6.html", null, getActivity());
+        Pair<GridLayout, List<PreStudent>> result = ServiceUtils.getOneList(getArguments().getString(GROUP_URI), null, getActivity());
         List<PreStudent> preStudents = result.second;
         GridLayout gridLayout = result.first;
         HorizontalScrollView concursGroupTable = (HorizontalScrollView) rootView.findViewById(R.id.concurs_group_table);

@@ -8,13 +8,16 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.dyploma.garik.dyploma.R;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.Utils.ServiceUtils;
@@ -24,7 +27,8 @@ import org.jsoup.nodes.Element;
 public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     ListView groupList;
-    Map<String, String> groupLinks = new TreeMap<>();
+    List<String> hrefs = new LinkedList<>();
+    List<Pair<String, Map<String, List<Element>>>> listLinks;
     public AllListsFragment(){}
 
     @Override
@@ -34,19 +38,21 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
         final View rootView = inflater.inflate(R.layout.all_lists, container, false);
 
         groupList = (ListView) rootView.findViewById(R.id.group_list);
-        /*groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        groupList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Map<String, String> entrantsLists = ServiceUtils.getEntrantsLists(getActivity(), new Callback<String>() {
-                    @Override
-                    public void call(String input) {
 
-                    }
-                });
-                entrantsLists.clear();
+                android.app.FragmentManager fragmentManager = getFragmentManager();
+                Bundle arguments = new Bundle();
+                arguments.putString(ConcursGroupFragment.GROUP_URI, "http://www.pkmpei.ru//inform/" + hrefs.get(position));
+                Fragment fragment = new ConcursGroupFragment();
+                fragment.setArguments(arguments);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.frame_container, fragment).addToBackStack(null).commit();
+                Toast.makeText(getActivity(), hrefs.get(position), Toast.LENGTH_SHORT).show();
 
             }
-        });*/
+        });
         refreshData();
 
         return rootView;
@@ -63,21 +69,31 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
 
             private void refreshData() {
-                List<Pair<String, Map<String, List<Element>>>> listLinks = ServiceUtils.getEntrantsLists(getActivity(), new Callback<String>() {
+                List<Pair<String, Map<String, List<Element>>>> tempListLinks = ServiceUtils.getEntrantsLists(getActivity(), new Callback<String>() {
                     @Override
                     public void call(String input) {
                     }
                 });
-                /*int mapSize = listLinks.values().size();
-                String[] queueLines = listLinks.keySet().toArray(new String[mapSize]);
-                String[] queueTitles = new String[mapSize];
-                for (int i = 0; i < mapSize; i++) {
-                    queueTitles[i] = queueLines[i];
+                if (tempListLinks.size() == 0) {
+                    return;
+                }
+                hrefs.clear();
+                int hrefsCount = 0;
+                listLinks = tempListLinks;
+                groupList.setAdapter(null);
+                List<String> queueTitles = new LinkedList<>();
+                for (Pair<String, Map<String, List<Element>>> p: listLinks) {
+                    Map<String, List<Element>> mapaaa = p.second;
+                    for (String key: mapaaa.keySet()) {
+                        List<Element> list = mapaaa.get(key);
+                        for (Element e : list) {
+                            queueTitles.add(p.first + "(" + key + ")" + e.text());
+                            hrefs.add(hrefsCount++, e.attr("href"));
+                        }
+                    }
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_link, queueTitles);
                 groupList.setAdapter(adapter);
-                groupLinks.clear();
-                groupLinks.putAll(listLinks);*/
 
                 ServiceUtils.getConcursGroup(getActivity(), new Callback<String>() {
                     @Override
