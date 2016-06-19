@@ -126,7 +126,7 @@ public class ServiceUtils {
                         for (int k = 0; k < links.size(); k++) {
                             Element currentList = links.get(k);
                             String link = currentList.attr("href");
-                            if (!filter.contains(link)) {
+                            if (filter != null && !filter.contains(link)) {
                                 continue;
                             }
                             String groupTitle = currentList.parent().parent().getAllElements().get(1).text();
@@ -225,13 +225,13 @@ public class ServiceUtils {
         }
     }
 
-    public static Pair<GridLayout, List<PreStudent>> getOneList(String listUri, Callback<String> callback, Context context) {
+    public static Pair<GridLayout, Integer> getOneList(String listUri, Callback<String> callback, Context context) {
         Log.d(TAG, "Получение содержимого списка: " + listUri);
 
-        List<PreStudent> allPreStudents = new LinkedList<>();
+        Integer preStudentsCount = 0;
         GridLayout gridLayout = new GridLayout(context);
         gridLayout.setRowCount(2);
-        Pair<GridLayout, List<PreStudent>> result = new Pair<>(gridLayout, allPreStudents);
+        Pair<GridLayout, Integer> result = new Pair<>(gridLayout, preStudentsCount);
         try {
             String load_query = new OneListTask(callback).execute(listUri).get();
             if (Utils.isEmpty(load_query)) {
@@ -316,10 +316,7 @@ public class ServiceUtils {
                     columnTitles.add(specialNumber, e.text());
                     specialNumber++;
                     columnTitle.setText(e.text());
-                    /*columnTitle.setTextAppearance(context, R.style.AppTheme_TableColumnHeader);
-                    columnTitle.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));*/
                     columnTitle.setLayoutParams(layoutParams);
-                    //columnTitle.setLayoutParams(linerLayoutParams);
                     columnTitle.setGravity(Gravity.CENTER);
                     gridLayout.addView(columnTitle);
                 }
@@ -335,39 +332,17 @@ public class ServiceUtils {
                         layoutParams.rowSpec = GridLayout.spec(i, 1);
                         preStudentRow.setText(fields.get(j).text());
                         gridLayout.addView(preStudentRow);
+                        preStudentsCount++;
                     }
                 }
-                /*for (int i = 2; i < peopleList.size(); i++) {
-                    try {
-                        Elements fields = peopleList.get(i).select("tr").select("td");
-                        PreStudent preStudent = new PreStudent();
-                        int ind = 0;
-                        preStudent.setSum(Integer.parseInt(fields.get(ind++).text().replace("\u00A0","").trim()));
-                        preStudent.setMath(Integer.parseInt(fields.get(ind++).text().replace("\u00A0","").trim()));
-                        // Хак, есть таблицы, где не указаны баллы за физику
-                        if (fields.size() == 10) {
-                            preStudent.setPhysic(Integer.parseInt(fields.get(ind++).text().replace("\u00A0", "").trim()));
-                        }
-                        preStudent.setRussian(Integer.parseInt(fields.get(ind++).text().replace("\u00A0","").trim()));
-                        preStudent.setId(fields.get(ind++).text().replace("\u00A0","").trim());
-                        preStudent.setFio(fields.get(ind++).text());
-                        preStudent.setBirthDate(fields.get(ind++).text());
-                        preStudent.setCommon(fields.get(ind++).text());
-                        preStudent.setDocumentStatus(fields.get(ind++).text());
-                        preStudent.setComments(fields.get(ind).text());
-                        allPreStudents.add(preStudent);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Ошибка при парсинге данных абитуриента из списка: " + peopleList.get(i) +
-                        "\nСообщение об ошибке: "+ e.getLocalizedMessage());
-                    }
-                }*/
             } else {
                 Log.e(TAG, "Что-то не так со списком, количество подходящих таблиц : " + links.size());
             }
-            if (allPreStudents.size() == 0) {
+            if (preStudentsCount == 0) {
                 Log.d(TAG, "Список студентов в конкурсной группе пустой");
             } else {
-                Log.d(TAG, "Список студентов успешно загужен, количество элементов списка: " + allPreStudents.size());
+                result = new Pair<>(gridLayout, preStudentsCount);
+                Log.d(TAG, "Список студентов успешно загужен, количество элементов списка: " + preStudentsCount);
             }
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Ошибка при получении содержимого списка студентов: " + e.getLocalizedMessage());

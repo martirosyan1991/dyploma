@@ -107,7 +107,7 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void call(String input) {
             }
-        }, linksFilter);
+        }, null);
         if (tempListLinks.size() == 0) {
             Toast.makeText(getActivity(), "Список групп абитуриента - пуст", Toast.LENGTH_SHORT).show();
             return;

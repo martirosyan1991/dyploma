@@ -33,14 +33,14 @@ public class ConcursGroupFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_concurs_group, container, false);
 
-        Pair<GridLayout, List<PreStudent>> result = ServiceUtils.getOneList(getArguments().getString(GROUP_URI), null, getActivity());
-        List<PreStudent> preStudents = result.second;
+        Pair<GridLayout, Integer> result = ServiceUtils.getOneList(getArguments().getString(GROUP_URI), null, getActivity());
+        Integer preStudentsCount = result.second;
         GridLayout gridLayout = result.first;
         HorizontalScrollView concursGroupTable = (HorizontalScrollView) rootView.findViewById(R.id.concurs_group_table);
 
 
 
-        if (preStudents.isEmpty()) {
+        if (preStudentsCount == 0) {
             concursGroupTable.setVisibility(View.GONE);
             Toast.makeText(getActivity(), "Список поступающих пуст", Toast.LENGTH_SHORT).show();
             return rootView;
