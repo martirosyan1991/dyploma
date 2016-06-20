@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Поступи в МЭИ!</string>
+    <string name="app_name">Абитуриент НИУ МЭИ</string>
 
     <!-- Запросы -->
     <string name="load_query">http://www.pkmpei.ru/mobile/get_queue.php?mode=1</string>
