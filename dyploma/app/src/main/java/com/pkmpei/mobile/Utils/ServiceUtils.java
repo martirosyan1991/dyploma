@@ -286,6 +286,7 @@ public class ServiceUtils {
                     colCount++;
                     columnTitle.setText(e.text());
                     columnTitle.setLayoutParams(layoutParams);
+                    columnTitle.setBackgroundColor(0xF0F0FF);
                     gridLayout.addView(columnTitle);
                 }
                 Elements secondTitleRow = peopleList.get(1).select("[class=parName]");
@@ -318,6 +319,7 @@ public class ServiceUtils {
                     columnTitle.setText(e.text());
                     columnTitle.setLayoutParams(layoutParams);
                     columnTitle.setGravity(Gravity.CENTER);
+                    columnTitle.setBackgroundColor(0xF0F0FF);
                     gridLayout.addView(columnTitle);
                 }
                 Log.d(TAG, "Задаем таблице количество колонок: " + colCount);
@@ -331,6 +333,7 @@ public class ServiceUtils {
                         layoutParams.columnSpec = GridLayout.spec(j, 1);
                         layoutParams.rowSpec = GridLayout.spec(i, 1);
                         preStudentRow.setText(fields.get(j).text());
+                        preStudentRow.setBackgroundColor(0xF0F0FF);
                         gridLayout.addView(preStudentRow);
                         preStudentsCount++;
                     }

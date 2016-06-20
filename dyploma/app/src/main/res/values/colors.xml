@@ -14,4 +14,6 @@
     <color name="yellow_man_color">#FFFF00</color>
     <color name="red_man_color">#FF0000</color>
     <color name="light_grey_man">#c5c4c4</color>
+
+    <color name="columnHeaderBackground">#CFF0F0FF</color>
 </resources>

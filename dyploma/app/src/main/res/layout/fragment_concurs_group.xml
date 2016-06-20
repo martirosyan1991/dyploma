@@ -6,26 +6,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/concurs_group_table"
-        >
-    <!--<GridLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:rowCount="2"
-        android:columnCount="10"
-        >-->
-
-        <!--<TextView android:text="Сумма" android:layout_gravity="fill" android:gravity="center" android:layout_rowSpan="2" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="Баллы"  android:layout_gravity="fill" android:gravity="center" android:layout_rowSpan="1" android:layout_columnSpan="3" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="ИД" android:layout_rowSpan="2" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="ФИО поступающего" android:layout_rowSpan="2" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="Дата рождения" android:layout_rowSpan="2" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="Общ." android:layout_rowSpan="2" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="Док.обр." android:layout_rowSpan="2" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="Примечание" android:layout_rowSpan="2" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="Мат." android:layout_rowSpan="1" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="Физ." android:layout_rowSpan="1" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />
-        <TextView android:text="Рус." android:layout_rowSpan="1" android:layout_columnSpan="1" style="@style/AppTheme.TableColumnHeader" />-->
-        <!--</GridLayout>-->
-    </HorizontalScrollView>
-
+        />
 </ScrollView>

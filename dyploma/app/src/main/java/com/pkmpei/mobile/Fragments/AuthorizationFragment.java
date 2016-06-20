@@ -34,7 +34,7 @@ public class AuthorizationFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_authorization, container, false);
 
-        Button registerAndLoginButton = (Button) rootView.findViewById(R.id.register_and_login_button);
+        Button registerAndLoginButton = (Button) rootView.findViewById(R.id.login_button);
         registerAndLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,6 +42,19 @@ public class AuthorizationFragment extends Fragment {
                 String password = ((TextView) rootView.findViewById(R.id.password_editText)).getText().toString();
                 String imei = UserPreferences.getInstance().getImei();
                 try {
+                    try {
+                        new RegOrDelMobileTask(getActivity().getResources().getString(R.string.del_mobile),
+                                username, password, imei, new Callback<String>() {
+                            @Override
+                            public void call(String input) {
+
+                            }
+                        }).execute().get();
+                        Log.d(TAG, "Отвязка мобильного устройства прошла успешно");
+                    } catch (InterruptedException | ExecutionException e) {
+                        Log.e(TAG, "Отвязка мобильного устройства завершилась ошибкой: " + e.getLocalizedMessage());
+                    }
+
                     String regMobileResponse = new RegOrDelMobileTask(getActivity().getResources().getString(R.string.reg_mobile),
                             username, password, imei, new Callback<String>() {
                         @Override
@@ -78,7 +91,7 @@ public class AuthorizationFragment extends Fragment {
             }
         });
 
-        Button loginButton = (Button) rootView.findViewById(R.id.login_button);
+        Button loginButton = (Button) rootView.findViewById(R.id.register_and_login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
