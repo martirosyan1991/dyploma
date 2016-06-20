@@ -24,7 +24,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,9 +33,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.ConcursGroup;
-import com.pkmpei.mobile.MainActivity;
 import com.pkmpei.mobile.News;
-import com.pkmpei.mobile.PreStudent;
 import com.pkmpei.mobile.Tasks.CheckAuthTask;
 import com.pkmpei.mobile.Tasks.GetConcursTask;
 import com.pkmpei.mobile.Tasks.GetGroupsTask;
@@ -290,7 +287,7 @@ public class ServiceUtils {
                     colCount++;
                     columnTitle.setText(e.text());
                     columnTitle.setLayoutParams(layoutParams);
-                    columnTitle.setBackgroundColor(0xF0F0FF);
+                    columnTitle.setBackgroundColor(0x00FF00);
                     gridLayout.addView(columnTitle);
                 }
                 Elements secondTitleRow = peopleList.get(1).select("[class=parName]");
@@ -323,7 +320,7 @@ public class ServiceUtils {
                     columnTitle.setText(e.text());
                     columnTitle.setLayoutParams(layoutParams);
                     columnTitle.setGravity(Gravity.CENTER);
-                    columnTitle.setBackgroundColor(0xF0F0FF);
+                    columnTitle.setBackgroundColor(0x00FF00);
                     gridLayout.addView(columnTitle);
                 }
                 Log.d(TAG, "Задаем таблице количество колонок: " + colCount);
@@ -337,7 +334,7 @@ public class ServiceUtils {
                         layoutParams.columnSpec = GridLayout.spec(j, 1);
                         layoutParams.rowSpec = GridLayout.spec(i, 1);
                         preStudentRow.setText(fields.get(j).text());
-                        preStudentRow.setBackgroundColor(0xF0F0FF);
+                        preStudentRow.setBackgroundColor(0x00FF00);
                         gridLayout.addView(preStudentRow);
                         preStudentsCount++;
                     }

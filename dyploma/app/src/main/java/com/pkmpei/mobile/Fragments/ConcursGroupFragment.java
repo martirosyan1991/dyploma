@@ -2,23 +2,16 @@ package com.pkmpei.mobile.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dyploma.garik.dyploma.R;
-import com.pkmpei.mobile.Callback;
-import com.pkmpei.mobile.PreStudent;
 import com.pkmpei.mobile.Utils.ServiceUtils;
-
-import java.util.List;
 
 public class ConcursGroupFragment extends Fragment {
 
