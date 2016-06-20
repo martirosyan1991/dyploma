@@ -177,7 +177,11 @@ public class ServiceUtils {
                 news.setId(Integer.parseInt(newsContent[0]));
                 news.setDate(newsContent[1]);
                 news.setTitle(newsContent[2]);
-                news.setText(newsContent[3]);
+                if (newsContent.length > 3) {
+                    news.setText(newsContent[3]);
+                } else {
+                    news.setText("");
+                }
                 return news;
             }
             return null;

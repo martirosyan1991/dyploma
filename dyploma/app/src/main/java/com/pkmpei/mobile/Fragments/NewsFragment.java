@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,6 +20,7 @@ import java.util.List;
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.News;
 import com.pkmpei.mobile.Utils.ServiceUtils;
+import com.pkmpei.mobile.adapter.NewsTitleAdapter;
 
 public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
@@ -92,7 +92,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             queueTitles[i] = newsList.get(i).getTitle();
             newsIds.add(i, newsList.get(i).getId());
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, queueTitles);
+        NewsTitleAdapter adapter = new NewsTitleAdapter(getActivity(), newsList);
         newsListView.setAdapter(adapter);
     }
 }
