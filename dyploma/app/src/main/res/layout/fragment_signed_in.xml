@@ -8,27 +8,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="true"
-        android:layout_margin="16dp"
+        android:layout_marginBottom="14dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="12sp"
         android:text="Имя пользователя"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fioTextView"
         android:focusable="true"
-        android:layout_margin="16dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
+        android:textStyle="bold|italic"
         tools:text="@string/username"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="true"
-        android:layout_margin="16dp"
+        android:layout_marginBottom="14dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginLeft="16dp"
+        android:textSize="12sp"
         android:text="Дата рождения"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/birthDateTextView"
-        android:layout_margin="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="16sp"
+        android:textStyle="bold|italic"
         tools:text="01.01.2000"
         />
 
@@ -36,5 +47,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/logout_text"
+        android:layout_marginLeft="16dp"
         android:id="@+id/cancel_button"/>
 </LinearLayout>
