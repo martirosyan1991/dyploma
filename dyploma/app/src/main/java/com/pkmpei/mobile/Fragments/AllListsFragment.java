@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +25,7 @@ import com.pkmpei.mobile.ConcursGroup;
 import com.pkmpei.mobile.UserPreferences;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 import com.pkmpei.mobile.Utils.Utils;
+import com.pkmpei.mobile.adapter.GroupTitleAdapter;
 
 import org.jsoup.nodes.Element;
 
@@ -56,7 +56,6 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 fragment.setArguments(arguments);
                 fragmentManager.beginTransaction()
                         .replace(R.id.frame_container, fragment).addToBackStack(null).commit();
-                Toast.makeText(getActivity(), hrefs.get(position), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -122,12 +121,12 @@ public class AllListsFragment extends Fragment implements SwipeRefreshLayout.OnR
             for (String key : mapaaa.keySet()) {
                 List<Element> list = mapaaa.get(key);
                 for (Element e : list) {
-                    queueTitles.add(p.first + "(" + key + ")" + e.text());
+                    queueTitles.add(key + "(" + e.text().trim() + ")");
                     hrefs.add(hrefsCount++, e.attr("href"));
                 }
             }
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_link, queueTitles);
+        GroupTitleAdapter adapter = new GroupTitleAdapter(getActivity(), queueTitles);
         groupList.setAdapter(adapter);
     }
 }
