@@ -25,17 +25,15 @@
     <string-array name="nav_drawer_items">
         <item>Новости</item>
         <item>Электронная очередь</item>
-        <item>Конкурсные группы</item>
-        <item>Тестовая одна группа</item>
+        <item>Списки</item>
         <item>Личный кабинет</item>
     </string-array>
 
     <array name="nav_drawer_icons">
         <item>@drawable/ic_news</item>
         <item>@drawable/ic_queue</item>
+        <item>@drawable/ic_lists</item>
         <item>@drawable/ic_profile</item>
-        <item>@drawable/ic_mood_bad</item>
-        <item>@drawable/ic_black_heart</item>
     </array>
 
     <string name="username">AmbartsumyanGG</string>

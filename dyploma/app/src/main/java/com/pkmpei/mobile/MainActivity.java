@@ -88,16 +88,14 @@ public class MainActivity extends AppCompatActivity {
         menuItems.add(new MenuItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // Конкурсные группы
         menuItems.add(new MenuItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        // Тестовая группа
-        menuItems.add(new MenuItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
 
         // Личный кабинет
         if (!Utils.isEmpty(UserPreferences.getInstance().getImei())) {
             String FIO = UserPreferences.getInstance().getFIO();
             if (!Utils.isEmpty(FIO)) {
-                menuItems.add(new MenuItem(FIO, navMenuIcons.getResourceId(4, -1)));
+                menuItems.add(new MenuItem(FIO, navMenuIcons.getResourceId(3, -1)));
             } else {
-                menuItems.add(new MenuItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+                menuItems.add(new MenuItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
             }
         }
 
@@ -202,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             case 1:
                 fragment = new QueueFragment();
                 break;
-            case 4:
+            case 3:
                 if (UserPreferences.getInstance().getFIO().isEmpty()) {
                     fragment = new AuthorizationFragment();
                 } else {
@@ -211,9 +209,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 2:
                 fragment = new AllListsFragment();
-                break;
-            case 3:
-                fragment = new ConcursGroupFragment();
                 break;
 
             default:
@@ -293,9 +288,9 @@ public class MainActivity extends AppCompatActivity {
         if (Utils.isEmpty(UserPreferences.getInstance().getImei())) {
             return;
         }
-        MenuItem personalOfficeMenuItem = ((MenuItem) mDrawerList.getAdapter().getItem(4));
+        MenuItem personalOfficeMenuItem = ((MenuItem) mDrawerList.getAdapter().getItem(3));
         if (personalOfficeMenuItem != null) {
-            personalOfficeMenuItem.setTitle(!Utils.isEmpty(FIO) ? FIO : navMenuTitles[4]);
+            personalOfficeMenuItem.setTitle(!Utils.isEmpty(FIO) ? FIO : navMenuTitles[3]);
         } else {
             Log.e(TAG, "Не удалось задать текст пункту меню \"Личный кабинет\"");
         }
