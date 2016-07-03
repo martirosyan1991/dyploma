@@ -2,23 +2,16 @@ package com.pkmpei.mobile.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.dyploma.garik.dyploma.R;
-import com.pkmpei.mobile.Callback;
-import com.pkmpei.mobile.PreStudent;
 import com.pkmpei.mobile.Utils.ServiceUtils;
-
-import java.util.List;
 
 public class ConcursGroupFragment extends Fragment {
 
@@ -33,10 +26,10 @@ public class ConcursGroupFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_concurs_group, container, false);
 
-        Pair<GridLayout, Integer> result = ServiceUtils.getOneList(getArguments().getString(GROUP_URI), null, getActivity());
+        Pair<TableLayout, Integer> result = ServiceUtils.getOneList(getArguments().getString(GROUP_URI), null, getActivity());
         Integer preStudentsCount = result.second;
-        GridLayout gridLayout = result.first;
-        HorizontalScrollView concursGroupTable = (HorizontalScrollView) rootView.findViewById(R.id.concurs_group_table);
+        TableLayout tableLayout = result.first;
+        HorizontalScrollView concursGroupTable = (HorizontalScrollView) rootView.findViewById(R.id.horizontal_concurs_group);
 
 
 
@@ -46,7 +39,7 @@ public class ConcursGroupFragment extends Fragment {
             return rootView;
         }
         concursGroupTable.setVisibility(View.VISIBLE);
-        concursGroupTable.addView(gridLayout);
+        concursGroupTable.addView(tableLayout);
         return rootView;
     }
 }

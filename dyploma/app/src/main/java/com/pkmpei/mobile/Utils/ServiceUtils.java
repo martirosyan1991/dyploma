@@ -1,20 +1,15 @@
 package com.pkmpei.mobile.Utils;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.AppCompatTextView;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.Spanned;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.widget.GridLayout;
-import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.dyploma.garik.dyploma.R;
@@ -24,7 +19,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,9 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.pkmpei.mobile.Callback;
 import com.pkmpei.mobile.ConcursGroup;
-import com.pkmpei.mobile.MainActivity;
 import com.pkmpei.mobile.News;
-import com.pkmpei.mobile.PreStudent;
 import com.pkmpei.mobile.Tasks.CheckAuthTask;
 import com.pkmpei.mobile.Tasks.GetConcursTask;
 import com.pkmpei.mobile.Tasks.GetGroupsTask;
@@ -229,13 +221,14 @@ public class ServiceUtils {
         }
     }
 
-    public static Pair<GridLayout, Integer> getOneList(String listUri, Callback<String> callback, Context context) {
+    public static Pair<TableLayout, Integer> getOneList(String listUri, Callback<String> callback, Context context) {
         Log.d(TAG, "Получение содержимого списка: " + listUri);
 
         Integer preStudentsCount = 0;
         GridLayout gridLayout = new GridLayout(context);
         gridLayout.setRowCount(2);
-        Pair<GridLayout, Integer> result = new Pair<>(gridLayout, preStudentsCount);
+        TableLayout tableLayout = (TableLayout) LayoutInflater.from(context).inflate(R.layout.concurs_group_table_layout, null);
+        Pair<TableLayout, Integer> result = new Pair<>(tableLayout, preStudentsCount);
         try {
             String load_query = new OneListTask(callback).execute(listUri).get();
             if (Utils.isEmpty(load_query)) {
@@ -248,107 +241,19 @@ public class ServiceUtils {
             if (links.size() == 1) {
                 List<String> columnTitles = new LinkedList<>();
                 Elements peopleList = links.get(0).child(0).children();
-                Elements firstTitleRow = peopleList.get(0).select("[class=parName]");
-                Integer colCount = 0;
-                int specialNumber = 0;
-                int extraColumnCount = 0;
-                for (Element e: firstTitleRow) {
-                    boolean oneColSpan = true;
-                    AppCompatTextView columnTitle = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
-                    columnTitle.setGravity(Gravity.CENTER);
-                    String rowSpan = e.attr("rowspan");
-                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-                    layoutParams.setGravity(Gravity.FILL);
-                    if (Utils.isEmpty(rowSpan)) {
-                        layoutParams.rowSpec = GridLayout.spec(0, 1);
-                        String colSpan = e.attr("colspan");
-                        try {
-                            int colSpanParam = Integer.parseInt(colSpan);
-                            layoutParams.columnSpec = GridLayout.spec(colCount, colSpanParam);
-                            extraColumnCount = colSpanParam;
-                            specialNumber = colCount;
-                            colCount += colSpanParam - 1;
-                            if (colSpanParam > 1) {
-                                oneColSpan = false;
-                            }
-                        } catch (NumberFormatException ne) {
-                            layoutParams.columnSpec = GridLayout.spec(colCount, 1);
-                        }
-                    } else {
-                        try {
-                            layoutParams.rowSpec = GridLayout.spec(0, Integer.parseInt(rowSpan));
-                        } catch (NumberFormatException ne) {
-                            layoutParams.rowSpec = GridLayout.spec(0, 2);
-                        }
-                        layoutParams.columnSpec = GridLayout.spec(colCount, 1);
-                    }
-                    if (extraColumnCount == 0) {
-                        columnTitles.add(colCount, e.text());
-                    } else  if (oneColSpan){
-                        columnTitles.add(colCount - extraColumnCount, e.text());
-                    }
-                    colCount++;
-                    columnTitle.setText(e.text());
-                    columnTitle.setLayoutParams(layoutParams);
-                    columnTitle.setBackgroundColor(0xF0F0FF);
-                    gridLayout.addView(columnTitle);
-                }
-                Elements secondTitleRow = peopleList.get(1).select("[class=parName]");
-                for (Element e: secondTitleRow) {
-                    AppCompatTextView columnTitle = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
-                    columnTitle.setGravity(Gravity.CENTER);
-                    LinearLayout.LayoutParams linerLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    linerLayoutParams.gravity = Gravity.FILL;
-                    String rowSpan = e.attr("rowspan");
-                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-                    layoutParams.setGravity(Gravity.FILL);
-                    if (Utils.isEmpty(rowSpan)) {
-                        layoutParams.rowSpec = GridLayout.spec(1, 1);
-                        String colSpan = e.attr("colspan");
-                        try {
-                            layoutParams.columnSpec = GridLayout.spec(specialNumber, Integer.parseInt(Utils.isEmpty(colSpan) ? "1" : colSpan));
-                        } catch (NumberFormatException ne) {
-                            layoutParams.columnSpec = GridLayout.spec(specialNumber, 1);
-                        }
-                    } else {
-                        try {
-                            layoutParams.rowSpec = GridLayout.spec(1, 1);
-                        } catch (NumberFormatException ne) {
-                            layoutParams.rowSpec = GridLayout.spec(1, 1);
-                        }
-                        layoutParams.columnSpec = GridLayout.spec(specialNumber, 1);
-                    }
-                    columnTitles.add(specialNumber, e.text());
-                    specialNumber++;
-                    columnTitle.setText(e.text());
-                    columnTitle.setLayoutParams(layoutParams);
-                    columnTitle.setGravity(Gravity.CENTER);
-                    columnTitle.setBackgroundColor(0xF0F0FF);
-                    gridLayout.addView(columnTitle);
-                }
+
+                Integer colCount = processFirstTitleRow(context, tableLayout, columnTitles, peopleList);
+
                 Log.d(TAG, "Задаем таблице количество колонок: " + colCount);
                 gridLayout.setColumnCount(colCount);
-                for (int i = 2; i < peopleList.size(); i++) {
-                    Elements fields = peopleList.get(i).select("tr").select("td");
-                    for (int j = 0; j < colCount; j++) {
-                        AppCompatTextView preStudentRow = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
-                        GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-                        layoutParams.setGravity(Gravity.FILL);
-                        layoutParams.columnSpec = GridLayout.spec(j, 1);
-                        layoutParams.rowSpec = GridLayout.spec(i, 1);
-                        preStudentRow.setText(fields.get(j).text());
-                        preStudentRow.setBackgroundColor(0xF0F0FF);
-                        gridLayout.addView(preStudentRow);
-                        preStudentsCount++;
-                    }
-                }
+                /**/
             } else {
                 Log.e(TAG, "Что-то не так со списком, количество подходящих таблиц : " + links.size());
             }
-            if (preStudentsCount == 0) {
+            if (preStudentsCount != 0) {
                 Log.d(TAG, "Список студентов в конкурсной группе пустой");
             } else {
-                result = new Pair<>(gridLayout, preStudentsCount);
+                result = new Pair<>(tableLayout, preStudentsCount);
                 Log.d(TAG, "Список студентов успешно загужен, количество элементов списка: " + preStudentsCount);
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -357,6 +262,88 @@ public class ServiceUtils {
         return result;
     }
 
+    private static int processFirstTitleRow(Context context, TableLayout tableLayout, List<String> columnTitles, Elements peopleList) {
+        int colCount = 0;
+        Elements firstTitleRows = peopleList.get(0).select("[class=parName]");
+        TableRow firstTitleRow = new TableRow(context);
+        int specialNumber = 0;
+        int extraColSpan = 0;
+        for (Element e: firstTitleRows) {
+            AppCompatTextView columnTitle = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
+            columnTitle.setGravity(Gravity.CENTER);
+            String rowSpan = e.attr("rowspan");
+            TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
+            if (Utils.isEmpty(rowSpan)) {
+                String colSpan = e.attr("colspan");
+                try {
+                    specialNumber = colCount;
+                    extraColSpan = Integer.parseInt(colSpan);
+                    layoutParams.span = Integer.parseInt(colSpan);
+                } catch (NumberFormatException ne) {
+                    layoutParams.span = 1;
+                    extraColSpan = 1;
+                }
+            } else {
+                layoutParams.span = 1;
+            }
+
+            columnTitles.add(colCount, e.text());
+            colCount++;
+            columnTitle.setText(e.text());
+            columnTitle.setLayoutParams(layoutParams);
+            columnTitle.setBackgroundResource(R.color.column_title_color);
+            columnTitle.setTextColor(ContextCompat.getColor(context, R.color.row_item_color));
+            firstTitleRow.addView(columnTitle);
+        }
+        tableLayout.addView(firstTitleRow);
+
+        Elements secondTitleRows = peopleList.get(1).select("[class=parName]");
+        processSecondTitleRow(context, tableLayout, specialNumber, secondTitleRows, columnTitles, colCount, extraColSpan);
+
+
+        for (int i = 2; i < peopleList.size(); i++) {
+            Elements fields = peopleList.get(i).select("tr").select("td");
+            TableRow preStudentRow = new TableRow(context);
+            for (int j = 0; j < colCount; j++) {
+                AppCompatTextView preStudentView = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
+                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
+                layoutParams.span = 1;
+                preStudentView.setText(fields.get(j).text());
+                preStudentView.setBackgroundResource(R.color.row_item_color);
+                preStudentRow.addView(preStudentView);
+            }
+            tableLayout.addView(preStudentRow);
+        }
+        return colCount;
+    }
+
+    private static void processSecondTitleRow(Context context, TableLayout tableLayout, int specialNumber,
+                                              Elements secondTitleRows, List<String> columnTitles, int colCount, int extraColSpan) {
+        TableRow secondTitleRow = new TableRow(context);
+        TextView firstSpace = new TextView(context);
+        TableRow.LayoutParams firstParams = new TableRow.LayoutParams();
+        firstParams.span = specialNumber;
+        firstSpace.setLayoutParams(firstParams);
+        secondTitleRow.addView(firstSpace);
+        for (Element e: secondTitleRows) {
+            AppCompatTextView columnTitle = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
+            TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
+            layoutParams.span = 1;
+            columnTitles.add(specialNumber, e.text());
+            columnTitle.setText(e.text());
+            columnTitle.setLayoutParams(layoutParams);
+            columnTitle.setGravity(Gravity.CENTER);
+            columnTitle.setBackgroundResource(R.color.column_title_color);
+            columnTitle.setTextColor(ContextCompat.getColor(context, R.color.row_item_color));
+            secondTitleRow.addView(columnTitle);
+        }
+        TextView secondSpace = new TextView(context);
+        TableRow.LayoutParams secondParams = new TableRow.LayoutParams();
+        secondParams.span = colCount - extraColSpan;
+        secondSpace.setLayoutParams(secondParams);
+        secondTitleRow.addView(secondSpace);
+        tableLayout.addView(secondTitleRow);
+    }
 
     public static void logon(String logon_query, String mobile_pwd, Callback<String> callback) {
         String FIOandBD = null;

@@ -19,5 +19,9 @@
 
     <color name="menu_icon_color">#FFFFFFFF</color>
 
+    <!-- Цвета для оформления конкурсных списков-->
+    <color name="column_title_color">#FF405E7C</color>
+    <color name="row_item_color">#FFFFFF</color>
+
     <color name="columnHeaderBackground">#CFF0F0FF</color>
 </resources>
