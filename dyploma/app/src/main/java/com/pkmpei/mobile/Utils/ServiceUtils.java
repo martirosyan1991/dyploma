@@ -225,8 +225,6 @@ public class ServiceUtils {
         Log.d(TAG, "Получение содержимого списка: " + listUri);
 
         Integer preStudentsCount = 0;
-        GridLayout gridLayout = new GridLayout(context);
-        gridLayout.setRowCount(2);
         TableLayout tableLayout = (TableLayout) LayoutInflater.from(context).inflate(R.layout.concurs_group_table_layout, null);
         Pair<TableLayout, Integer> result = new Pair<>(tableLayout, preStudentsCount);
         try {
@@ -242,15 +240,13 @@ public class ServiceUtils {
                 List<String> columnTitles = new LinkedList<>();
                 Elements peopleList = links.get(0).child(0).children();
 
-                Integer colCount = processFirstTitleRow(context, tableLayout, columnTitles, peopleList);
+                preStudentsCount = processFirstTitleRow(context, tableLayout, columnTitles, peopleList);
 
-                Log.d(TAG, "Задаем таблице количество колонок: " + colCount);
-                gridLayout.setColumnCount(colCount);
                 /**/
             } else {
                 Log.e(TAG, "Что-то не так со списком, количество подходящих таблиц : " + links.size());
             }
-            if (preStudentsCount != 0) {
+            if (preStudentsCount == 0) {
                 Log.d(TAG, "Список студентов в конкурсной группе пустой");
             } else {
                 result = new Pair<>(tableLayout, preStudentsCount);
@@ -300,21 +296,33 @@ public class ServiceUtils {
         Elements secondTitleRows = peopleList.get(1).select("[class=parName]");
         processSecondTitleRow(context, tableLayout, specialNumber, secondTitleRows, columnTitles, colCount, extraColSpan);
 
+        colCount += extraColSpan;
 
+
+        int studentsCount = 0;
         for (int i = 2; i < peopleList.size(); i++) {
             Elements fields = peopleList.get(i).select("tr").select("td");
             TableRow preStudentRow = new TableRow(context);
-            for (int j = 0; j < colCount; j++) {
+            for (int j = 0; j < fields.size(); j++) {
                 AppCompatTextView preStudentView = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
                 TableRow.LayoutParams layoutParams = new TableRow.LayoutParams();
                 layoutParams.span = 1;
                 preStudentView.setText(fields.get(j).text());
                 preStudentView.setBackgroundResource(R.color.row_item_color);
                 preStudentRow.addView(preStudentView);
+                studentsCount++;
+            }
+            if (peopleList.size() < colCount) {
+                TextView space = new TextView(context);
+                TableRow.LayoutParams firstParams = new TableRow.LayoutParams();
+                firstParams.span = colCount - peopleList.size();
+                space.setLayoutParams(firstParams);
+                space.setTextColor(ContextCompat.getColor(context, R.color.row_item_color));
+                preStudentRow.addView(space);
             }
             tableLayout.addView(preStudentRow);
         }
-        return colCount;
+        return studentsCount;
     }
 
     private static void processSecondTitleRow(Context context, TableLayout tableLayout, int specialNumber,
@@ -324,6 +332,8 @@ public class ServiceUtils {
         TableRow.LayoutParams firstParams = new TableRow.LayoutParams();
         firstParams.span = specialNumber;
         firstSpace.setLayoutParams(firstParams);
+        firstSpace.setBackgroundResource(R.color.column_title_color);
+        firstSpace.setTextColor(ContextCompat.getColor(context, R.color.row_item_color));
         secondTitleRow.addView(firstSpace);
         for (Element e: secondTitleRows) {
             AppCompatTextView columnTitle = (AppCompatTextView) LayoutInflater.from(context).inflate(R.layout.column_title, null);
@@ -339,8 +349,10 @@ public class ServiceUtils {
         }
         TextView secondSpace = new TextView(context);
         TableRow.LayoutParams secondParams = new TableRow.LayoutParams();
-        secondParams.span = colCount - extraColSpan;
+        secondParams.span = colCount - extraColSpan + 1;
         secondSpace.setLayoutParams(secondParams);
+        secondSpace.setBackgroundResource(R.color.column_title_color);
+        secondSpace.setTextColor(ContextCompat.getColor(context, R.color.row_item_color));
         secondTitleRow.addView(secondSpace);
         tableLayout.addView(secondTitleRow);
     }
