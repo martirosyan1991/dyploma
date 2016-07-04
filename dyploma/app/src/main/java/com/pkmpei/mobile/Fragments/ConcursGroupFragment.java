@@ -2,11 +2,13 @@ package com.pkmpei.mobile.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
@@ -38,6 +40,15 @@ public class ConcursGroupFragment extends Fragment {
             Toast.makeText(getActivity(), "Список поступающих пуст", Toast.LENGTH_SHORT).show();
             return rootView;
         }
+
+        final ScrollView sv = (ScrollView) rootView.findViewById(R.id.external_scrollview);
+        final View child = tableLayout.getChildAt(tableLayout.getChildCount() - 1);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                sv.smoothScrollTo(0, child.getBottom());
+            }
+        });
         concursGroupTable.setVisibility(View.VISIBLE);
         concursGroupTable.addView(tableLayout);
         return rootView;

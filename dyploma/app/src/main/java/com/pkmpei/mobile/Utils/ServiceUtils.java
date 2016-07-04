@@ -8,6 +8,7 @@ import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.GridLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -311,6 +312,9 @@ public class ServiceUtils {
                 preStudentView.setBackgroundResource(R.color.row_item_color);
                 preStudentRow.addView(preStudentView);
                 studentsCount++;
+                if (j == fields.size() - 1) {
+                    preStudentRow.requestFocus();
+                }
             }
             if (peopleList.size() < colCount) {
                 TextView space = new TextView(context);
