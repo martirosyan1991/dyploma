@@ -1,6 +1,7 @@
 package com.pkmpei.mobile.Fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.pkmpei.mobile.Callback;
+import com.pkmpei.mobile.MainActivity;
 import com.pkmpei.mobile.News;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 import com.pkmpei.mobile.adapter.NewsTitleAdapter;
@@ -44,11 +46,12 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                android.app.FragmentManager fragmentManager = getFragmentManager();
+                FragmentManager fragmentManager = getFragmentManager();
                 Bundle arguments = new Bundle();
                 arguments.putInt(NewsDetailsFragment.NEWS_ID_KEY, newsIds.get(position));
                 Fragment fragment = new NewsDetailsFragment();
                 fragment.setArguments(arguments);
+                ((MainActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
                 fragmentManager.beginTransaction()
                         .replace(R.id.frame_container, fragment).addToBackStack(null).commit();
             }

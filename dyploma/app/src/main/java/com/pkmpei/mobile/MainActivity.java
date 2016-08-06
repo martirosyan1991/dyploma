@@ -18,11 +18,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
 
 import com.dyploma.garik.dyploma.R;
 import com.pkmpei.mobile.Fragments.AllListsFragment;
 import com.pkmpei.mobile.Fragments.AuthorizationFragment;
+import com.pkmpei.mobile.Fragments.NewsDetailsFragment;
 import com.pkmpei.mobile.Fragments.NewsFragment;
 import com.pkmpei.mobile.Fragments.QueueFragment;
 import com.pkmpei.mobile.Fragments.SignedInFragment;
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
 
     private NavigationView navigationView;
     @IdRes private int selectedItem;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,toolbar,
+         toggle = new ActionBarDrawerToggle(this, drawer,
                 R.string.app_name, // nav drawer open - description for accessibility
                 R.string.app_name // nav drawer close - description for accessibility
         ) {
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         // Личный кабинет
         if (!Utils.isEmpty(UserPreferences.getInstance().getImei())) {
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            toggle.syncState();
             super.onBackPressed();
         }
     }
@@ -125,10 +128,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == android.R.id.home && getFragmentManager().findFragmentById(R.id.frame_container) instanceof NewsDetailsFragment) {
+            onBackPressed();
             return true;
+        } else {
+            toggle.onOptionsItemSelected(item);
+            return false;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
