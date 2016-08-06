@@ -2,6 +2,9 @@ package com.pkmpei.mobile.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,11 +64,14 @@ public class NewsTitleAdapter extends BaseAdapter {
         TextView newsDate = (TextView) convertView.findViewById(R.id.news_date_view);
         newsDate.setText(newsList.get(position).getDate());
         if (newsList.get(position).isExpandable()) {
-            newsDate.setTextColor(0xff17416c);
-            newsTitle.setTextColor(0xff4b7bf6);
+            newsDate.setTextColor(ContextCompat.getColor(context, R.color.color_news_date_expandable));
+            newsTitle.setTextColor(ContextCompat.getColor(context, R.color.color_news_title_expandable));
+            SpannableString content = new SpannableString(newsTitle.getText() + "...");
+            content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+            newsTitle.setText(content);
         } else {
-            newsDate.setTextColor(0xff000000);
-            newsTitle.setTextColor(0xff000000);
+            newsDate.setTextColor(ContextCompat.getColor(context, R.color.color_news_date_regular));
+            newsTitle.setTextColor(ContextCompat.getColor(context, R.color.color_news_title_regular));
         }
 
         convertView.setClickable(!newsList.get(position).isExpandable());

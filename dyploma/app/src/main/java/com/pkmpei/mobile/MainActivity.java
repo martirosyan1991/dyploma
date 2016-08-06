@@ -35,12 +35,21 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
 
     private NavigationView navigationView;
-    @IdRes private int selectedItem;
+    private int selectedItem;
     private ActionBarDrawerToggle toggle;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("SELECTED_ITEM", selectedItem);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            selectedItem = savedInstanceState.getInt("SELECTED_ITEM", 0);
+        }
         // сохраняем в настройки imei
         TelephonyManager telephonyManager = (android.telephony.TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         UserPreferences.getInstance().setImei(telephonyManager.getDeviceId());
@@ -78,8 +87,7 @@ public class MainActivity extends AppCompatActivity
                 super.onDrawerSlide(drawerView, 0); // this disables the animation
             }
         };
-        /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.some, R.string.some);*/
+
         drawer.addDrawerListener(toggle);
         toggle.onDrawerClosed(drawer);
         toggle.syncState();
@@ -102,7 +110,7 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().getItem(3).setVisible(false);
         }
         logon();
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        onNavigationItemSelected(navigationView.getMenu().getItem(selectedItem));
     }
 
 
@@ -140,7 +148,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        selectedItem = item.getItemId();
         int id = item.getItemId();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -149,21 +156,26 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.menu_news:
                 fragment = new NewsFragment();
+                selectedItem = 0;
                 break;
             case R.id.menu_queue:
+                selectedItem = 1;
                 fragment = new QueueFragment();
                 break;
+            case R.id.menu_lists:
+                selectedItem = 2;
+                fragment = new AllListsFragment();
+                break;
+
             case R.id.menu_profile:
+                selectedItem = 3;
+
                 if (UserPreferences.getInstance().getFIO().isEmpty()) {
                     fragment = new AuthorizationFragment();
                 } else {
                     fragment = new SignedInFragment();
                 }
                 break;
-            case R.id.menu_lists:
-                fragment = new AllListsFragment();
-                break;
-
             default:
                 break;
         }
@@ -199,7 +211,8 @@ public class MainActivity extends AppCompatActivity
 
     public void updatePersonalCabinetTitle() {
         String FIO = UserPreferences.getInstance().getFIO();
-        if (Utils.isEmpty(UserPreferences.getInstance().getImei())) {
+        String imei = UserPreferences.getInstance().getImei();
+        if (Utils.isEmpty(imei) || "000000000000000".equals(imei)) {
             navigationView.getMenu().getItem(3).setVisible(false);
             return;
         }

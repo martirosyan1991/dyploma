@@ -8,6 +8,11 @@
 
     <color name="colorText">#FF000000</color>
 
+    <color name="color_news_date_expandable">#ff17416c</color>
+    <color name="color_news_title_expandable">#ff17416c</color>
+    <color name="color_news_date_regular">#FF000000</color>
+    <color name="color_news_title_regular">#FF000000</color>
+
     <color name="list_item_title">#A66D19</color>
     <color name="list_background">#FF405E7C</color>
     <color name="list_background_pressed">#992416</color>
