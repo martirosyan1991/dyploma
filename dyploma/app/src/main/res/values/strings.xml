@@ -22,19 +22,11 @@
 
     <string name="about">О приложении</string>
 
-    <string-array name="nav_drawer_items">
-        <item>Новости</item>
-        <item>Электронная очередь</item>
-        <item>Списки</item>
-        <item>Личный кабинет</item>
-    </string-array>
-
-    <array name="nav_drawer_icons">
-        <item>@drawable/ic_news</item>
-        <item>@drawable/ic_queue</item>
-        <item>@drawable/ic_lists</item>
-        <item>@drawable/ic_profile</item>
-    </array>
+    <!-- Пункты меню -->
+    <string name="menu_news">Новости</string>
+    <string name="menu_queue">Электронная очередь</string>
+    <string name="menu_lists">Списки</string>
+    <string name="menu_profile">кабинет</string>
 
     <string name="username">AmbartsumyanGG</string>
     <string name="pwd">fRYgxO1v</string>
@@ -44,4 +36,5 @@
     <string name="allLists"><a href="http://www.pkmpei.ru/inform/entrants_list.html">Все списки поступающих</a></string>
     <string name="login_text">Войти</string>
     <string name="logout_text">Выйти из кабинета</string>
+    <string name="some">someString</string>
 </resources>

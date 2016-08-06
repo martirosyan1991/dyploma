@@ -1,127 +1,64 @@
 package com.pkmpei.mobile;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+
+import com.dyploma.garik.dyploma.R;
 import com.pkmpei.mobile.Fragments.AllListsFragment;
 import com.pkmpei.mobile.Fragments.AuthorizationFragment;
-import com.pkmpei.mobile.Fragments.ConcursGroupFragment;
 import com.pkmpei.mobile.Fragments.NewsFragment;
 import com.pkmpei.mobile.Fragments.QueueFragment;
 import com.pkmpei.mobile.Fragments.SignedInFragment;
 import com.pkmpei.mobile.Utils.ServiceUtils;
 import com.pkmpei.mobile.Utils.Utils;
-import com.pkmpei.mobile.adapter.NavDrawerListAdapter;
-import com.pkmpei.mobile.model.MenuItem;
 
-import java.util.ArrayList;
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.TypedArray;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.view.Menu;
-import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ListView;
-
-;import com.dyploma.garik.dyploma.R;
-
-public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
-
-    // nav drawer title
-    private CharSequence mDrawerTitle;
-
-    // used to store app title
-    private CharSequence mTitle;
-
-    // slide menu items
-    private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
-
-    private ArrayList<MenuItem> menuItems;
-    private NavDrawerListAdapter adapter;
-
+    private NavigationView navigationView;
+    @IdRes private int selectedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // сохраняем в настройки imei
         TelephonyManager telephonyManager = (android.telephony.TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         UserPreferences.getInstance().setImei(telephonyManager.getDeviceId());
 
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
-        // пытаемся залогиниться
         setContentView(R.layout.activity_main);
-
-        mTitle = mDrawerTitle = getTitle();
-
-        // load slide menu items
-        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
-
-        // nav drawer icons from resources
-        navMenuIcons = getResources()
-                .obtainTypedArray(R.array.nav_drawer_icons);
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-
-        menuItems = new ArrayList<>();
-
-        // Добавляем пункты меню в боковое меню
-        // Новости
-        menuItems.add(new MenuItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        // Электронная очередь
-        menuItems.add(new MenuItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        // Конкурсные группы
-        menuItems.add(new MenuItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-
-        // Личный кабинет
-        if (!Utils.isEmpty(UserPreferences.getInstance().getImei())) {
-            String FIO = UserPreferences.getInstance().getFIO();
-            if (!Utils.isEmpty(FIO)) {
-                menuItems.add(new MenuItem(FIO, navMenuIcons.getResourceId(3, -1)));
-            } else {
-                menuItems.add(new MenuItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
-            }
-        }
-
-        // Recycle the typed array
-        navMenuIcons.recycle();
-
-        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
-
-        // setting the nav drawer list adapter
-        adapter = new NavDrawerListAdapter(getApplicationContext(),
-                menuItems);
-        mDrawerList.setAdapter(adapter);
-
-        // enabling action bar app icon and behaving it as toggle button
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,toolbar,
                 R.string.app_name, // nav drawer open - description for accessibility
                 R.string.app_name // nav drawer close - description for accessibility
         ) {
             @Override
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(mTitle);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_hamburger);
                 // calling onPrepareOptionsMenu() to show action bar icons
                 invalidateOptionsMenu();
@@ -131,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 super.onDrawerSlide(drawerView, 0); // this disables the arrow @ completed state
-                getSupportActionBar().setTitle(mDrawerTitle);
                 getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
                 invalidateOptionsMenu();
             }
@@ -141,133 +77,105 @@ public class MainActivity extends AppCompatActivity {
                 super.onDrawerSlide(drawerView, 0); // this disables the animation
             }
         };
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.some, R.string.some);*/
+        drawer.addDrawerListener(toggle);
+        toggle.onDrawerClosed(drawer);
+        toggle.syncState();
 
-        logon();
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (savedInstanceState == null) {
-            // on first time display view for first nav item
-            displayView(0);
+        // Личный кабинет
+        if (!Utils.isEmpty(UserPreferences.getInstance().getImei())) {
+            String FIO = UserPreferences.getInstance().getFIO();
+            if (!Utils.isEmpty(FIO)) {
+                navigationView.getMenu().getItem(3).setTitle(FIO);
+            } else {
+                navigationView.getMenu().getItem(3).setTitle(R.string.menu_profile);
+            }
+            navigationView.getMenu().getItem(3).setVisible(false);
+        } else {
+            navigationView.getMenu().getItem(3).setVisible(false);
         }
+        logon();
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
     }
 
-    /**
-     * Slide menu item click listener
-     */
-    private class SlideMenuClickListener implements
-            ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            // display view for selected nav drawer item
-            displayView(position);
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        // toggle nav drawer on selecting action bar app icon/title
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
             return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
-    /***
-     * Called when invalidateOptionsMenu() is triggered
-     */
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // if nav drawer is opened, hide the action items
-        return super.onPrepareOptionsMenu(menu);
-    }
+    public boolean onNavigationItemSelected(MenuItem item) {
+        selectedItem = item.getItemId();
+        int id = item.getItemId();
 
-    /**
-     * Diplaying fragment view for selected nav drawer list item
-     */
-    private void displayView(int position) {
-        // update the main_menu content by replacing fragments
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         Fragment fragment = null;
-        switch (position) {
-            case 0:
+        switch (id) {
+            case R.id.menu_news:
                 fragment = new NewsFragment();
                 break;
-            case 1:
+            case R.id.menu_queue:
                 fragment = new QueueFragment();
                 break;
-            case 3:
+            case R.id.menu_profile:
                 if (UserPreferences.getInstance().getFIO().isEmpty()) {
                     fragment = new AuthorizationFragment();
                 } else {
                     fragment = new SignedInFragment();
                 }
                 break;
-            case 2:
+            case R.id.menu_lists:
                 fragment = new AllListsFragment();
                 break;
 
             default:
                 break;
         }
-
         if (fragment != null) {
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.frame_container, fragment).commit();
 
-            // update selected item and title, then close the drawer
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
-            mDrawerLayout.closeDrawer(mDrawerList);
+            //setTitle(navMenuTitles[position]);
+            item.setChecked(true);
+            getSupportActionBar().setTitle(item.getTitle());
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
         } else {
             // error in creating fragment
             Log.e(TAG, "Error in creating fragment");
+            return false;
         }
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
-    }
-
-    /**
-     * When using the ActionBarDrawerToggle, you must call it during
-     * onPostCreate() and onConfigurationChanged()...
-     */
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        int count = getFragmentManager().getBackStackEntryCount();
-
-        if (count == 0) {
-            super.onBackPressed();
-            //additional code
-        } else {
-            getFragmentManager().popBackStack();
-        }
-
     }
 
     private void logon() {
@@ -286,20 +194,20 @@ public class MainActivity extends AppCompatActivity {
     public void updatePersonalCabinetTitle() {
         String FIO = UserPreferences.getInstance().getFIO();
         if (Utils.isEmpty(UserPreferences.getInstance().getImei())) {
+            navigationView.getMenu().getItem(3).setVisible(false);
             return;
         }
-        MenuItem personalOfficeMenuItem = ((MenuItem) mDrawerList.getAdapter().getItem(3));
+        MenuItem personalOfficeMenuItem = (navigationView.getMenu().getItem(3));
+        navigationView.getMenu().getItem(3).setVisible(true);
         if (personalOfficeMenuItem != null) {
-            personalOfficeMenuItem.setTitle(!Utils.isEmpty(FIO) ? FIO : navMenuTitles[3]);
+            personalOfficeMenuItem.setTitle(!Utils.isEmpty(FIO) ? FIO : getResources().getString(R.string.menu_profile));
         } else {
             Log.e(TAG, "Не удалось задать текст пункту меню \"Личный кабинет\"");
         }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                int position = mDrawerList.getSelectedItemPosition();
-                mDrawerList.setItemChecked(position, true);
-                mDrawerList.setSelection(position);
+                navigationView.getMenu().getItem(selectedItem).setChecked(true);
             }
         });
 
