@@ -9,15 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dyploma.garik.dyploma.R;
 import com.pkmpei.mobile.News;
-import com.pkmpei.mobile.Utils.Utils;
-import com.pkmpei.mobile.model.MenuItem;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

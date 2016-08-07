@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#003747</color>
-    <color name="colorPrimaryDark">#004e66</color>
+    <color name="colorPrimary">#FF003747</color>
+    <color name="colorPrimaryDark">#FF004e66</color>
     <color name="colorAccent">#B82828</color>
 
     <color name="side_nav_color">#AE004e66</color>
@@ -13,11 +13,7 @@
     <color name="color_news_date_regular">#FF000000</color>
     <color name="color_news_title_regular">#FF000000</color>
 
-    <color name="list_item_title">#A66D19</color>
     <color name="list_background">#FF405E7C</color>
-    <color name="list_background_pressed">#992416</color>
-    <color name="list_divider">#FFFFFFFF</color>
-    <color name="counter_text_bg">#FFB74C</color>
     <color name="counter_text_color">#FF405E7C</color>
     <color name="green_man_color">#FF009900</color>
     <color name="yellow_man_color">#FFE5E500</color>
@@ -29,6 +25,4 @@
     <!-- Цвета для оформления конкурсных списков-->
     <color name="column_title_color">#FF405E7C</color>
     <color name="row_item_color">#FFFFFF</color>
-
-    <color name="columnHeaderBackground">#CFF0F0FF</color>
 </resources>
