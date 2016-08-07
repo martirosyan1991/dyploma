@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FF003747</color>
-    <color name="colorPrimaryDark">#FF004e66</color>
-    <color name="colorAccent">#B82828</color>
+    <color name="colorPrimary">#FF004e66</color>
+    <color name="colorPrimaryDark">#FF003747</color>
+    <color name="colorAccent">#FF304FFE</color>
 
-    <color name="side_nav_color">#AE004e66</color>
+    <color name="side_nav_color">#FF004e66</color>
 
     <color name="colorText">#FF000000</color>
 
-    <color name="color_news_date_expandable">#ff17416c</color>
-    <color name="color_news_title_expandable">#ff17416c</color>
-    <color name="color_news_date_regular">#FF000000</color>
-    <color name="color_news_title_regular">#FF000000</color>
+    <color name="color_news_date_expandable">#DD000000</color>
+    <color name="color_news_title_expandable">#DD000000</color>
+    <color name="color_news_date_regular">#DD000000</color>
+    <color name="color_news_title_regular">#DD000000</color>
 
     <color name="list_background">#FF405E7C</color>
     <color name="counter_text_color">#FF405E7C</color>
